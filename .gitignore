@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+curl https://raw.githubusercontent.com/github/gitignore/master/Laravel.gitignore > .gitignore
+
