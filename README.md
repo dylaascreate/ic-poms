@@ -21,6 +21,11 @@ changes 4:
 --add column role to user table
 
 ![alt text](image-6.png)![alt text](image-7.png)![alt text](image-8.png)
+changes 5:
 --create product table
 --create order table
 --create relational table (user->order->product)
+
+![alt text](image-9.png)
+changes 6:
+--create product page with crud
