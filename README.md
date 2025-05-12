@@ -17,7 +17,7 @@ changes 3:
 ![alt text](image-3.png)![alt text](image-4.png)![alt text](image-5.png)
 changes 4:
 --add user sidebar
---add admin sidebar
+--add admin sidebar + admin dashboard
 --add column role to user table
 
 ![alt text](image-6.png)![alt text](image-7.png)![alt text](image-8.png)
