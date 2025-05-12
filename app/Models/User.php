@@ -22,7 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // Added role column
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -57,4 +59,21 @@ class User extends Authenticatable
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+
 }

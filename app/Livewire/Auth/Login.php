@@ -23,28 +23,32 @@ class Login extends Component
 
     public bool $remember = false;
 
+    // Define the expected role (you can set it dynamically)
+    public string $expectedRole = 'user';  // Change this based on the role you're checking for, e.g., 'admin'
+
     /**
      * Handle an incoming authentication request.
      */
-    public function login(): void
+    public function login()
     {
         $this->validate();
 
-        $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+            $user = Auth::user();
+            
+            // Redirect based on the user's role
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('dashboard');  // Regular user route
+            }
         }
 
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        // Handle failed login attempt
+        session()->flash('error', 'Invalid credentials');
+        return redirect()->route('login');
     }
+
 
     /**
      * Ensure the authentication request is not rate limited.
@@ -72,6 +76,6 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }
