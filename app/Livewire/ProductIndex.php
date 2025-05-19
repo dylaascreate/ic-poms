@@ -11,7 +11,7 @@ class ProductIndex extends Component
     public $name, $description, $price, $productId; // public properties for input fields
 
     protected $rules = [
-        'name' => 'required',
+        'product_name' => 'required',
         'description' => 'nullable',
         'price' => 'required|numeric',
     ]; // validation rules (error-handling)

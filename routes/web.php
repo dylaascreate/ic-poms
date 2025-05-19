@@ -1,12 +1,14 @@
 <?php
 
 use App\Livewire\ProductIndex;
+use App\Livewire\OrderUser;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified']) // check if user is authenticated and email is verified
@@ -46,5 +48,8 @@ Route::middleware(['auth'])->group(function () {
     // PRODUCTS
     Route::get('product', ProductIndex::class)->name('product');
 });
+
+   //ORDER
+   Route::get('/order/{productId}', OrderUser::class)->name('order.form');
 
 require __DIR__.'/auth.php';
