@@ -47,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
     
     // PRODUCTS
     Route::get('product', ProductIndex::class)->name('product');
+    Route::get('manage-product', ProductIndex::class)->name('manage-product');
 });
 
    //ORDER

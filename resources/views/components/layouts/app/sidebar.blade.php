@@ -27,7 +27,7 @@
                 {{-- Same for all users --}}
                 {{-- Admin Tools --}}
                     <flux:navlist.group expandable heading="Admin Tools" class="grid">
-                        <flux:navlist.item icon="squares-plus" href="#">Manage Products</flux:navlist.item>
+                        <flux:navlist.item icon="squares-plus" :href="route('manage-product')" :current="request()->routeIs('manage-product')" wire:navigate>Manage Products</flux:navlist.item>
                         <flux:navlist.item icon="list-bullet" href="#">Manage Orders</flux:navlist.item>
                         <flux:navlist.item icon="user-plus" href="#">Manage Customers</flux:navlist.item>
                     </flux:navlist.group>
