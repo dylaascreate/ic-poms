@@ -25,7 +25,7 @@
                             <th style="text-align: left">Name</th>
                             <th style="text-align: left">Description</th>
                             <th>Price</th>
-                            <th>Act{{--  --}} {{-- column for action button --}}
+                            <th>Action{{--  --}} {{-- column for action button --}}
                         </tr>
                     </thead>
                     <tbody>
