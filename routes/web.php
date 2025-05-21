@@ -8,7 +8,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
-
+use App\Livewire\ManageProduct;
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified']) // check if user is authenticated and email is verified
@@ -47,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     
     // PRODUCTS
     Route::get('product', ProductIndex::class)->name('product');
-    Route::get('manage-product', ProductIndex::class)->name('manage-product');
+    Route::get('manage-product', ManageProduct::class)->name('manage-product');
 });
 
    //ORDER
