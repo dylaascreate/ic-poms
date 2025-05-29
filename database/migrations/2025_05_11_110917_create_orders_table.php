@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('name');  // Add this line if it's missing
+            $table->string('no_order'); // renamed from name
             $table->text('description');
             $table->decimal('price', 8, 2);
-            $table->foreignId('user_id')->constrained(); // Make sure this is there if you're using users
+            $table->enum('status', ['waiting', 'printing', 'can_pick_up', 'picked_up'])->default('waiting'); // new status
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }
