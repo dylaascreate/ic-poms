@@ -21,7 +21,7 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            {{-- <th style="text-align: left">Image</th> --}}
+                            <th style="text-align: left">Image</th>
                             <th style="text-align: left">Name</th>
                             <th style="text-align: left">Description</th>
                             <th>Price</th>
@@ -33,7 +33,14 @@
                         <tr>
                             <td class="px-2 text-center">{{ $pt->id }}</td>
                             <td>{{ $pt->name }}</td>
-                            {{-- <td>{{ $pt->Image }}</td> --}}
+                            <td class="px-2">
+                                @if ($pt->image)
+                                    <img src="{{ asset('storage/' . $pt->image) }}" alt="Product Image" class="h-16 w-16 object-cover rounded">
+                                @else
+                                    <span class="text-gray-400 italic">No Image</span>
+                                @endif
+                            </td>
+
                             <td class="px-2" style="min-width: 500px">{{ $pt->description }}</td>
                             <td class="px-2 text-center">{{ $pt->price }}</td>
                             <td class="py-2 text-center">
@@ -59,9 +66,34 @@
         {{-- heading --}}
         <flux:heading class="px-10" size="xl">{{ $productId ? 'Edit Product' : 'Add Product' }}</flux:heading> 
         <div class="px-10 py-8">
-        {{-- inset form here --}}
+        {{-- insert form here --}}
             <form wire:submit.prevent="save" class="space-y-4 mb-6">
                 <div class="grid grid-col-2 gap-4">
+                    <label class="block mb-1 font-medium text-gray-700">Product Image</label>
+                        <input type="file" wire:model="image" class="block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-md file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100"/>
+
+                        @error('image') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
+                        {{-- Preview new uploaded image --}}
+                        @if ($image)
+                            <div class="mt-3">
+                                <label class="text-sm font-medium text-gray-600">Preview:</label>
+                                <img src="{{ $image->temporaryUrl() }}" class="h-24 mt-1 rounded">
+                            </div>
+                        @elseif ($productId)
+                            @php $existingProduct = \App\Models\Product::find($productId); @endphp
+                            @if ($existingProduct && $existingProduct->image)
+                                <div class="mt-3">
+                                    <label class="text-sm font-medium text-gray-600">Current Image:</label>
+                                    <img src="{{ asset('storage/' . $existingProduct->image) }}" class="h-24 mt-1 rounded">
+                                </div>
+                            @endif
+                        @endif
                     <flux:input wire:model="name" label="Product Name" placeholder="Product Name"/>
                     {{-- wire:model is used to kept temp data into model --}}
                     <flux:textarea wire:model="description" label="Description" placeholder="Description"/>
