@@ -39,20 +39,22 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 Route::middleware(['auth'])->group(function () { 
     // middleware for authenticated users
     // group all routes that require authentication
-    
+
     // SETTINGS
     Route::redirect('settings', 'settings/profile');
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-    
+
     // PRODUCTS
     Route::get('product', ProductIndex::class)->name('product');
     Route::get('manage-product', ManageProduct::class)->name('manage-product');
 
     // CUSTOMERS
-    // Route::get('customer', CustomerIndex::class)->name('customer');
     Route::get('manage-customer', ManageCustomer::class)->name('manage-customer');
+
+    // ORDERS
+    Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
 });
 
    //ORDER

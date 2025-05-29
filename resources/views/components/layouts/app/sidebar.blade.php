@@ -27,8 +27,8 @@
                 {{-- Same for all users --}}
                 {{-- Admin Tools --}}
                     <flux:navlist.group expandable heading="Admin Tools" class="grid">
-                        <flux:navlist.item icon="squares-plus" :href="route('manage-product')" :current="request()->routeIs('manage-product')" wire:navigate>Manage Products</flux:navlist.item>
-                        <flux:navlist.item icon="list-bullet" href="#">Manage Orders</flux:navlist.item>
+                        <flux:navlist.item icon="squares-plus" badge="{{ \App\Models\Product::count() }}" :href="route('manage-product')" :current="request()->routeIs('manage-product')" wire:navigate>Manage Products</flux:navlist.item>
+                        <flux:navlist.item icon="list-bullet" badge="{{ \App\Models\Order::count() }}" :href="route('manage-order')" :current="request()->routeIs('manage-order')" wire:navigate>Manage Orders</flux:navlist.item>
                         <flux:navlist.item icon="user-plus" badge="{{ \App\Models\User::count() }}"  :href="route('manage-customer')" :current="request()->routeIs('manage-customer')" wire:navigate>Manage Customers</flux:navlist.item>
                     </flux:navlist.group>
                 @endif
