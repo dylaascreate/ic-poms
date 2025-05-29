@@ -29,7 +29,7 @@
                     <flux:navlist.group expandable heading="Admin Tools" class="grid">
                         <flux:navlist.item icon="squares-plus" :href="route('manage-product')" :current="request()->routeIs('manage-product')" wire:navigate>Manage Products</flux:navlist.item>
                         <flux:navlist.item icon="list-bullet" href="#">Manage Orders</flux:navlist.item>
-                        <flux:navlist.item icon="user-plus" href="#">Manage Customers</flux:navlist.item>
+                        <flux:navlist.item icon="user-plus" badge="{{ \App\Models\User::count() }}"  :href="route('manage-customer')" :current="request()->routeIs('manage-customer')" wire:navigate>Manage Customers</flux:navlist.item>
                     </flux:navlist.group>
                 @endif
 
