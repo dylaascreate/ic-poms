@@ -12,55 +12,61 @@
             <flux:badge variant="primary">{{ $orders->total() }}</flux:badge>
         </flux:heading>
 
-        <div class="rounded-xl border shadow-sm">
-            <div class="px-10 py-8 overflow-x-auto">
-                <table class="w-full table-auto border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-gray-100 text-left">
-                            <th class="p-2">No Order</th>
-                            <th class="p-2">Description</th>
-                            <th class="p-2">Price (RM)</th>
-                            <th class="p-2">User</th>
-                            <th class="p-2">Status</th>
-                            <th class="p-2">Products</th>
-                            <th class="p-2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($orders as $order)
-                        <tr wire:key="order-{{ $order->id }}" class="border-b hover:bg-gray-50">
-                            <td class="p-2 align-top">{{ $order->no_order }}</td>
-                            <td class="p-2 align-top">{{ $order->description }}</td>
-                            <td class="p-2 align-top">{{ $order->price }}</td>
-                            <td class="p-2 align-top">{{ $order->user?->name ?? 'N/A' }}</td>
-                            <td class="p-2 align-top">
-                                <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold
-                                    @switch($order->status)
-                                        @case('waiting') bg-gray-400 @break
-                                        @case('printing') bg-green-500 @break
-                                        @case('can_pick_up') bg-orange-500 @break
-                                        @case('picked_up') bg-purple-500 @break
-                                        @default bg-gray-300
-                                    @endswitch
-                                ">
-                                    {{ ucwords(str_replace('_', ' ', $order->status)) }}
-                                </span>
-                            </td>
-                            <td class="p-2 align-top">
-                                <ul class="list-disc list-inside text-xs max-h-24 overflow-auto">
-                                    @foreach($order->products as $product)
-                                        <li>{{ $product->name }} (x{{ $product->pivot->quantity }})</li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                            <td class="p-2 align-top space-x-2">
-                                <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" aria-label="Edit order {{ $order->no_order }}" />
-                                <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <div class="rounded-xl border shadow-sm bg-white">
+            <div class="px-10 py-8">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
+                        <thead>
+                            <tr class="bg-rose-500 text-white text-sm uppercase">
+                                <th class="p-2">No Order</th>
+                                <th class="p-2">Description</th>
+                                <th class="p-2">Price (RM)</th>
+                                <th class="p-2">User</th>
+                                <th class="p-2">Status</th>
+                                <th class="p-2">Products</th>
+                                <th class="p-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($orders as $order)
+                            <tr wire:key="order-{{ $order->id }}" @class([
+                                'hover:bg-rose-300 transition duration-200 border-b',
+                                'bg-rose-200' => $loop->even,
+                                'bg-white' => !$loop->even,
+                            ])>
+                                <td class="p-2 align-top">{{ $order->no_order }}</td>
+                                <td class="p-2 align-top">{{ $order->description }}</td>
+                                <td class="p-2 align-top">{{ $order->price }}</td>
+                                <td class="p-2 align-top">{{ $order->user?->name ?? 'N/A' }}</td>
+                                <td class="p-2 align-top">
+                                    <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold
+                                        @switch($order->status)
+                                            @case('waiting') bg-gray-400 @break
+                                            @case('printing') bg-green-500 @break
+                                            @case('can_pick_up') bg-orange-500 @break
+                                            @case('picked_up') bg-purple-500 @break
+                                            @default bg-gray-300
+                                        @endswitch
+                                    ">
+                                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
+                                    </span>
+                                </td>
+                                <td class="p-2 align-top">
+                                    <ul class="list-disc list-inside text-xs max-h-24 overflow-auto">
+                                        @foreach($order->products as $product)
+                                            <li>{{ $product->name }} (x{{ $product->pivot->quantity }})</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="p-2 align-top space-x-2">
+                                    <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
+                                    <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="text-center p-2">
                     {{ $orders->links() }}
@@ -98,57 +104,54 @@
 
                     {{-- Product Selection --}}
                     <div class="mt-6">
-                    <label class="block font-bold text-sm text-gray-700 mb-2">Select Products</label>
-
-                    @foreach ($selectedProducts as $index => $product)
-                        <div class="border p-4 rounded-xl mb-4">
-                            <div class="mb-2">
-                                <select 
-                                    wire:model.defer="selectedProducts.{{ $index }}.product_id"
-                                    class="border rounded-md p-2 w-full text-sm"
-                                >
-                                    <option value="">-- Choose Product --</option>
-                                    @foreach($products as $p)
-                                        <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            @if(!empty($product['product_id']))
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        type="number"
-                                        placeholder="Qty"
-                                        wire:model.defer="selectedProducts.{{ $index }}.quantity"
-                                        class="border rounded-md p-2 w-1/3 text-sm"
-                                        min="0"
-                                        aria-label="Quantity"
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="Price"
-                                        wire:model.defer="selectedProducts.{{ $index }}.price"
-                                        class="border rounded-md p-2 w-1/3 text-sm"
-                                        step="0.01"
-                                        min="0"
-                                        aria-label="Price"
-                                    />
+                        <label class="block font-bold text-sm text-gray-700 mb-2">Select Products</label>
+                        @foreach ($selectedProducts as $index => $product)
+                            <div class="border p-4 rounded-xl mb-4">
+                                <div class="mb-2">
+                                    <select 
+                                        wire:model.defer="selectedProducts.{{ $index }}.product_id"
+                                        class="border rounded-md p-2 w-full text-sm"
+                                    >
+                                        <option value="">-- Choose Product --</option>
+                                        @foreach($products as $p)
+                                            <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                            @endif
 
-                            <button type="button" wire:click="removeProduct({{ $index }})" class="text-red-500 text-sm mt-2">Remove</button>
-                        </div>
-                    @endforeach
+                                @if(!empty($product['product_id']))
+                                    <div class="flex items-center gap-2">
+                                        <input
+                                            type="number"
+                                            placeholder="Qty"
+                                            wire:model.defer="selectedProducts.{{ $index }}.quantity"
+                                            class="border rounded-md p-2 w-1/3 text-sm"
+                                            min="0"
+                                            aria-label="Quantity"
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Price"
+                                            wire:model.defer="selectedProducts.{{ $index }}.price"
+                                            class="border rounded-md p-2 w-1/3 text-sm"
+                                            step="0.01"
+                                            min="0"
+                                            aria-label="Price"
+                                        />
+                                    </div>
+                                @endif
 
-                    <button type="button" wire:click="addProduct" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md text-sm">
-                        Add Another Product
-                    </button>
-                </div>
+                                <button type="button" wire:click="removeProduct({{ $index }})" class="text-red-500 text-sm mt-2">Remove</button>
+                            </div>
+                        @endforeach
+
+                        <button type="button" wire:click="addProduct" class="mt-2 px-4 py-2 bg-sky-500 text-white rounded-md text-sm">
+                            Add Another Product
+                        </button>
+                    </div>
 
                     {{-- Submit Button --}}
-
-
-                    <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6">
+                    <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6 bg-green-500 text-white rounded-md text-sm">
                         {{ $orderId ? 'Update' : 'Add Order' }}
                     </flux:button>
                 </form>

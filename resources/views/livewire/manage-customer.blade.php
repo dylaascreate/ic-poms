@@ -14,39 +14,40 @@
             </flux:badge>
         </flux:heading>
 
-        <div class="rounded-xl border">
-            <div class="px-10 py-8">
-                <table class="w-full">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th style="text-align: left">Name</th>
-                            <th style="text-align: left">Email</th>
-                            <th style="text-align: left">Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($customers as $cs)
-                            <tr>
-                                <td class="px-2 text-center">{{ $cs->id }}</td>
-                                <td>{{ $cs->name }}</td>
-                                <td>{{ $cs->email }}</td>
-                                <td class="text-center">{{ ucfirst($cs->role) }}</td>
-                                <td class="py-2 text-center">
-                                    <flux:button wire:click="edit({{ $cs->id }})" icon="pencil-square" variant="primary"></flux:button>
-                                    <flux:button wire:click="$dispatch('confirmDelete', {{ $cs->id }})" icon="trash" variant="danger"></flux:button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <div class="rounded-xl border shadow-sm bg-white overflow-x-auto">
+    <div class="px-10 py-8">
+        <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
+            <thead>
+                <tr class="bg-rose-500 text-white uppercase text-sm">
+                    <th class="p-2 text-center">ID</th>
+                    <th class="p-2 text-left">Name</th>
+                    <th class="p-2 text-left">Email</th>
+                    <th class="p-2 text-center">Role</th>
+                    <th class="p-2 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($customers as $cs)
+                    <tr class="{{ $loop->even ? 'bg-rose-200' : 'bg-rose-300' }} hover:bg-blue-200 transition duration-200 border-b">
+                        <td class="p-2 text-center">{{ $cs->id }}</td>
+                        <td class="p-2">{{ $cs->name }}</td>
+                        <td class="p-2">{{ $cs->email }}</td>
+                        <td class="p-2 text-center">{{ ucfirst($cs->role) }}</td>
+                        <td class="p-2 text-center space-x-2">
+                            <flux:button wire:click="edit({{ $cs->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" />
+                            <flux:button wire:click="$dispatch('confirmDelete', {{ $cs->id }})" icon="trash" variant="danger" />
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-                <div class="text-center p-2">
-                    {{ $customers->links() }}
-                </div>
-            </div>
+        <div class="mt-6 flex justify-center">
+            {{ $customers->links('pagination::tailwind') }}
         </div>
+    </div>
+</div>
+
     </div>
     <br>
 
@@ -72,7 +73,11 @@
                         </div>
 
                         {{-- Submit button --}}
-                        <flux:button type="submit" variant="primary" icon="paper-airplane">{{ $customerId ? 'Edit' : 'Add' }}</flux:button>
+                        <div class="flex justify-start w-full">
+                                <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6  bg-green-500 text-white rounded-md text-sm" >
+                                {{ $customerId ? 'Edit' : 'Add' }}
+                            </flux:button>
+                        </div>
                     </div>
                 </form>
             </div>
