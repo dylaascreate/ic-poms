@@ -18,7 +18,7 @@
     <div class="px-10 py-8">
         <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
             <thead>
-                <tr class="bg-rose-500 text-white uppercase text-sm">
+                <tr class="bg-yellow-500 text-white uppercase text-sm">
                     <th class="p-2 text-center">ID</th>
                     <th class="p-2 text-left">Name</th>
                     <th class="p-2 text-left">Email</th>
@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 @foreach($customers as $cs)
-                    <tr class="{{ $loop->even ? 'bg-rose-200' : 'bg-rose-300' }} hover:bg-blue-200 transition duration-200 border-b">
+                    <tr class="{{ $loop->even ? 'bg-yellow-200' : 'bg-yellow-300' }} hover:bg-blue-200 transition duration-200 border-b">
                         <td class="p-2 text-center">{{ $cs->id }}</td>
                         <td class="p-2">{{ $cs->name }}</td>
                         <td class="p-2">{{ $cs->email }}</td>

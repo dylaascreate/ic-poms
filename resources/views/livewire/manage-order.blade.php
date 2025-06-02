@@ -17,7 +17,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
                         <thead>
-                            <tr class="bg-rose-500 text-white text-sm uppercase">
+                            <tr class="bg-teal-500 text-white text-sm uppercase">
                                 <th class="p-2">No Order</th>
                                 <th class="p-2">Description</th>
                                 <th class="p-2">Price (RM)</th>
@@ -30,8 +30,8 @@
                         <tbody>
                             @foreach($orders as $order)
                             <tr wire:key="order-{{ $order->id }}" @class([
-                                'hover:bg-rose-300 transition duration-200 border-b',
-                                'bg-rose-200' => $loop->even,
+                                'hover:bg-teal-300 transition duration-200 border-b',
+                                'bg-teal-200' => $loop->even,
                                 'bg-white' => !$loop->even,
                             ])>
                                 <td class="p-2 align-top">{{ $order->no_order }}</td>
