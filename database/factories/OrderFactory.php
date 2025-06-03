@@ -19,14 +19,21 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        // Creating an order with a random user and some random products
         return [
-            'user_id' => User::factory(),  // This creates a new user for each order
-            'name' => $this->faker->word(3, true),
+            'user_id' => User::factory(),
+            'no_order' => strtoupper($this->faker->bothify('ORD###???')), // e.g. ORD123ABC
             'description' => $this->faker->sentence(),
-            'price' => $this->faker->randomFloat(2, 10, 500), // Random price between 10 and 500
+            'price' => $this->faker->randomFloat(2, 10, 500),
+            'status' => $this->faker->randomElement([
+                'waiting',
+                'printing',
+                'can_pick_up',
+                'picked_up'
+            ]),
         ];
     }
+
+
 
     /**
      * Define the relationship with products

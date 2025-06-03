@@ -24,28 +24,32 @@
 
     {{-- Product Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse($products as $product)
-            <div class="border rounded-xl p-4 shadow hover:shadow-lg transition">
-                {{-- Placeholder for future image --}}
-                <div class="h-40 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4">
-                    <img src="{{ asset('images/products/' . $product->image) }}"
-                        alt="{{ $product->name }}"
-                        class="w-full h-48 object-cover rounded-t-xl">
+    @forelse($products as $product)
+        <div class="border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            {{-- Smaller Image Container --}}
+            <div class="w-full h-28 bg-gray-100 flex items-center justify-center">
+                <img src="{{ asset('images/products/' . $product->image) }}"
+                     alt="{{ $product->name }}"
+                     class="h-full object-contain">
+            </div>
 
-                </div>
-                <h2 class="text-xl font-semibold mb-2">
+            {{-- Card Body --}}
+            <div class="p-4">
+                <h2 class="text-lg font-semibold mb-1">
                     <a href="#" class="text-blue-600 hover:underline">{{ $product->name }}</a>
                 </h2>
-                <p class="text-gray-600 mb-2">{{ Str::limit($product->description, 100) }}</p>
-                <div class="text-lg font-bold mb-2">RM {{ number_format($product->price, 2) }}</div>
-                    <a href="{{ route('order.form', $product->id) }}">
+                <p class="text-gray-600 text-sm mb-2">{{ Str::limit($product->description, 80) }}</p>
+                <div class="text-base font-bold mb-3">RM {{ number_format($product->price, 2) }}</div>
+                <a href="{{ route('order.form', $product->id) }}">
                     <flux:button icon="shopping-cart" variant="outline" />
-                    </a>
+                </a>
             </div>
-        @empty
-            <div class="col-span-3 text-center text-gray-500">No products found.</div>
-        @endforelse
-    </div>
+        </div>
+    @empty
+        <div class="col-span-3 text-center text-gray-500">No products found.</div>
+    @endforelse
+</div>
+
 
     {{-- Pagination --}}
     <div class="mt-6 text-center">
