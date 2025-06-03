@@ -1,106 +1,62 @@
-<div>
-    {{-- likewire must in div --}}
-    {{-- form --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- success message --}}
-    <div class="text-center text-green-600 bold">{{ session('message') }}</div>
-    {{-- table --}}
-    <div class="flex flex-col gap-6">
-            {{-- heading --}}
-            <flux:heading class="px-10 flex items-center gap-2" size="xl">
-                All Products 
-                <flux:badge variant="primary">
-                    {{ $products->total() }}
-                </flux:badge>
-            </flux:heading>
+<div class="px-10 py-6">
+    {{-- Top bar with Home and Profile Icons --}}
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{{ url('/') }}">
+                <flux:button icon="home" variant="outline" />
+            </a>
+            <h1 class="text-2xl font-bold">Products</h1>
+        </div>
+        <a href="{{ url('/profile') }}">
+            <flux:button icon="user-circle" variant="outline" />
+        </a>
+    </div>
 
-        <div class="rounded-xl border">
-            
-            <div class="px-10 py-8">
-                <table class="w-full">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            {{-- <th style="text-align: left">Image</th> --}}
-                            <th style="text-align: left">Name</th>
-                            <th style="text-align: left">Description</th>
-                            <th>Price</th>
-                            <th>Action</th>                           {{-- column for action button --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($products as $index => $pt)    {{-- loop through products --}}
-                        <tr>
-                            <td class="px-2 text-center">{{ $pt->id }}</td>
-                            <td>{{ $pt->name }}</td>
-                            {{-- <td>{{ $pt->Image }}</td> --}}
-                            <td class="px-2" style="min-width: 500px">{{ $pt->description }}</td>
-                            <td class="px-2 text-center">{{ $pt->price }}</td>
-                            <td class="py-2 text-center">
-                                <flux:button wire:click="edit({{ $pt->id }})" icon="pencil-square" variant="primary"></flux:button>
-                                <flux:button wire:click="$dispatch('confirmDelete',{{ $pt->id }})" icon="trash" variant="danger"></flux:button>
-                            </td>                               {{-- column for action button --}}
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="text-center p-2">
-                    {{-- pagination --}}
-                    {{ $products->links() }} {{-- pagination links --}}
+    {{-- Search Bar --}}
+    <div class="mb-6">
+        <flux:input wire:model.debounce.300ms="search" placeholder="Search products..." />
+    </div>
+
+    {{-- Success Message --}}
+    @if(session('message'))
+        <div class="text-center text-green-600 font-bold">{{ session('message') }}</div>
+    @endif
+
+    {{-- Product Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @forelse($products as $product)
+        <div class="border rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            {{-- Smaller Image Container --}}
+            <div class="w-full h-28 bg-gray-100 flex items-center justify-center">
+                <img src="{{ asset('images/products/' . $product->image) }}"
+                     alt="{{ $product->name }}"
+                     class="h-full object-contain">
+            </div>
+
+            {{-- Card Body --}}
+            <div class="p-4">
+                <h2 class="text-lg font-semibold mb-1">
+                    <a href="#" class="text-blue-600 hover:underline">{{ $product->name }}</a>
+                </h2>
+                <p class="text-gray-600 text-sm mb-2">{{ Str::limit($product->description, 80) }}</p>
+                <div class="text-base font-bold mb-3">RM {{ number_format($product->price, 2) }}</div>
+                <a href="{{ route('order.form', $product->id) }}">
+                    <flux:button icon="shopping-cart" variant="outline" />
+                </a>
             </div>
         </div>
-    </div>
+    @empty
+        <div class="col-span-3 text-center text-gray-500">No products found.</div>
+    @endforelse
 </div>
-<br>
-<div class="flex flex-col gap-6">
-    <div class="rounded-xl border">
-        <br>
-        
-        {{-- heading --}}
-        <flux:heading class="px-10" size="xl">{{ $productId ? 'Edit Product' : 'Add Product' }}</flux:heading> 
-        <div class="px-10 py-8">
-        {{-- inset form here --}}
-            <form wire:submit.prevent="save" class="space-y-4 mb-6">
-                <div class="grid grid-col-2 gap-4">
-                    <flux:input wire:model="name" label="Product Name" placeholder="Product Name"/>
-                    {{-- wire:model is used to kept temp data into model --}}
-                    <flux:textarea wire:model="description" label="Description" placeholder="Description"/>
-                    <flux:input wire:model="price" label="Price" placeholder="Price"/>
-                    {{-- button --}}
-                    <flux:button type="submit" variant="primary" icon="paper-airplane">{{ $productId ? 'Edit' : 'Add' }}</flux:button>
-                </div>
-            </form>
-        </div>
+
+
+    {{-- Pagination --}}
+    <div class="mt-6 text-center">
+        {{ $products->links() }}
     </div>
+
+
 </div>
-<br>
 
-{{-- script --}}
-<script>
-    document.addEventListener('livewire:init', function(){
-        // alert('Livewire is loaded');
-        // Swal.fire('Hi','Hello world!', 'error');
-        // Swal.fire('Hi','Hello world!', 'warning');
-        Livewire.on('productSaved', function(res){ // show success alert // res is passed from controller
-            // Swal.fire('Success!', 'Product saved successfully!', 'success');
-            Swal.fire('Success!', res.message, 'success'); // res.message is passed from controller
-        });
 
-        Livewire.on('confirmDelete', function(id){ // show confirm delete alert // id is passed from button
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.dispatch('delete', {id: id});
-                }
-            })
-        });
-    });
-</script>
-{{-- script --}}

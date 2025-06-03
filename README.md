@@ -29,3 +29,9 @@ changes 5:
 ![alt text](image-9.png)
 changes 6:
 --create product page with crud
+
+changes 7:
+--did UI for product page(user)
+
+changes 8:
+--created temporary form for Create order page(user)
