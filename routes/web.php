@@ -9,6 +9,8 @@ use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\ManageProduct;
+use App\Livewire\ManageCustomer;
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified']) // check if user is authenticated and email is verified
@@ -56,11 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
 });
 
-<<<<<<< HEAD
    //ORDER
    Route::get('/order/{productId}', OrderUser::class)->name('order.form');
-=======
-Route::get('/admin/dashboard', Dashboard::class)->middleware('auth');
->>>>>>> 0d90cffe9fc87e1043b0ecd3af3a6f5ec458ddbf
 
 require __DIR__.'/auth.php';

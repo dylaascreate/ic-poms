@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 @foreach($customers as $cs)
-                    <tr class="{{ $loop->even ? 'bg-yellow-200' : 'bg-yellow-300' }} hover:bg-blue-200 transition duration-200 border-b">
+                    <tr class="{{ $loop->even ? 'bg-yellow-50' : 'bg-yellow-100' }} hover:bg-blue-200 transition duration-200 border-b">
                         <td class="p-2 text-center">{{ $cs->id }}</td>
                         <td class="p-2">{{ $cs->name }}</td>
                         <td class="p-2">{{ $cs->email }}</td>

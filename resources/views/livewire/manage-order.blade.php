@@ -30,8 +30,8 @@
                         <tbody>
                             @foreach($orders as $order)
                             <tr wire:key="order-{{ $order->id }}" @class([
-                                'hover:bg-teal-300 transition duration-200 border-b',
-                                'bg-teal-200' => $loop->even,
+                                'hover:bg-teal-50 transition duration-200 border-b',
+                                'bg-teal-100' => $loop->even,
                                 'bg-white' => !$loop->even,
                             ])>
                                 <td class="p-2 align-top">{{ $order->no_order }}</td>
@@ -68,8 +68,8 @@
                     </table>
                 </div>
 
-                <div class="text-center p-2">
-                    {{ $orders->links() }}
+                <div class="mt-6 flex justify-center">
+                    {{ $orders->links('pagination::tailwind') }}
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
                 <form wire:submit.prevent="save" class="space-y-6" novalidate>
                     <div class="grid grid-cols-2 gap-6">
                         <flux:input wire:model.defer="no_order" label="No Order" placeholder="Order Number" required />
-                        <flux:input wire:model.defer="total" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
+                        <flux:input wire:model.defer="total" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" required />
                         <flux:textarea wire:model.defer="order_desc" label="Description" placeholder="Description" required />
                         <flux:select wire:model.defer="orderOwnerId" label="User" required>
                             <option value="">Select User</option>
