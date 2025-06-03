@@ -73,6 +73,7 @@
     <br>
     <div class="flex flex-col gap-6">
         <div class="rounded-xl border shadow-sm">
+            <br>
             <flux:heading class="px-10" size="xl">
                 {{ $orderId ? 'Edit Order' : 'Add Order' }}
             </flux:heading>
@@ -80,8 +81,8 @@
                 <form wire:submit.prevent="save" class="space-y-6" novalidate>
                     <div class="grid grid-cols-2 gap-6">
                         <flux:input wire:model.defer="no_order" label="No Order" placeholder="Order Number" required />
-                        <flux:input wire:model.defer="total" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
-                        <flux:textarea wire:model.defer="order_desc" label="Description" placeholder="Description" required />
+                        <flux:input wire:model.defer="price" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
+                        <flux:textarea wire:model.defer="description" label="Description" placeholder="Description" required />
                         <flux:select wire:model.defer="orderOwnerId" label="User" required>
                             <option value="">Select User</option>
                             @foreach($orderOwners as $owner)
@@ -158,8 +159,8 @@
 
     {{-- SWEETALERT SCRIPT --}}
     <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('orderSaved', (res) => {
+        document.addEventListener('livewire:init', function(){
+            Livewire.on('orderSaved', function(res){
                 Swal.fire('Success!', res.message, 'success');
             });
 
