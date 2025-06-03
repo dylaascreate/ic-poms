@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
 });
 
+Route::get('/admin/dashboard', Dashboard::class)->middleware('auth');
    //ORDER
    Route::get('/order/{productId}', OrderUser::class)->name('order.form');
 
