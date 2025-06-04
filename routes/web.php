@@ -11,10 +11,6 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\ManageProduct;
 use App\Livewire\ManageCustomer;
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified']) // check if user is authenticated and email is verified
-//     ->name('dashboard');
-
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
 
@@ -31,15 +27,11 @@ Route::get('dashboard', function () {
 
 // Admin-only route
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('dashboard', AdminDashboard::class)
-    ->name('dashboard');
+    Route::get('dashboard', AdminDashboard::class)->name('dashboard');
 });
 
-
-Route::middleware(['auth'])->group(function () { 
-    // middleware for authenticated users
-    // group all routes that require authentication
-
+// Authenticated user routes
+Route::middleware(['auth'])->group(function () {
     // SETTINGS
     Route::redirect('settings', 'settings/profile');
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -57,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
 });
 
-   //ORDER
-   Route::get('/order/{productId}', OrderUser::class)->name('order.form');
+// Order form route
+Route::get('/order/{productId}', OrderUser::class)->name('order.form');
 
 require __DIR__.'/auth.php';

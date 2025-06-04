@@ -173,4 +173,12 @@ class ManageOrder extends Component
         }
     }
 
+
+    public function countWaitingOrderCount()
+{
+    return Order::where('status', 'waiting')->count();
+}
+
+
+
 }
