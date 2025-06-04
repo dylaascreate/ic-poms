@@ -40,5 +40,10 @@ class Order extends Model
     {
         return $this->hasOne(OrderStatusHistory::class)->latestOfMany();
     }
+    
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 
 }

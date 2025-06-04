@@ -1,3 +1,4 @@
+<div>
 <div class="p-6 bg-gray-100 min-h-screen">
     <h2 class="text-2xl font-bold mb-4">Admin Dashboard</h2>
 
@@ -5,7 +6,7 @@
         <!-- Total Order Card -->
         <div class="bg-white p-6 rounded-2xl shadow-lg border hover:shadow-2xl transition flex flex-col items-center">
             <div class="flex items-center justify-between w-full mb-3">
-                <span class="text-4xl font-extrabold text-gray-800">{{ 115 }}</span>
+                <span class="text-4xl font-extrabold text-gray-800">{{ $totalOrders}}</span>
                 <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
                     <!-- Product Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -15,8 +16,23 @@
             </div>
             <div class="text-gray-600 text-base font-semibold mt-2">Total Order</div>
         </div>
+
+           <!-- Waiting Order Card -->
+    <div class="bg-gray-400 p-6 rounded-2xl shadow-lg border hover:shadow-2xl transition flex flex-col items-center">
+        <div class="flex items-center justify-between w-full mb-3">
+            <span class="text-4xl font-extrabold text-white">{{ $waitingOrders }}</span>
+            <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-yellow-300">
+                <!-- Clock Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </span>
+        </div>
+        <div class="text-white text-base font-semibold mt-2">Waiting Order</div>
+    </div>
+
         <!-- Checking Card -->
-        <div class="bg-yellow-400 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
+        {{-- <div class="bg-yellow-400 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
             <div class="flex items-center justify-between w-full mb-3">
                 <span class="text-4xl font-extrabold text-white">{{ 10 }}</span>
                 <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-yellow-200">
@@ -27,11 +43,11 @@
                 </span>
             </div>
             <div class="text-yellow-900 text-base font-semibold mt-2">Checking</div>
-        </div>
+        </div> --}}
         <!-- Printing Card -->
         <div class="bg-green-500 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
             <div class="flex items-center justify-between w-full mb-3">
-                <span class="text-4xl font-extrabold text-white">{{ 25 }}</span>
+                <span class="text-4xl font-extrabold text-white">{{ $printingOrders }}</span>
                 <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-green-200">
                     <!-- Print Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,9 +58,9 @@
             <div class="text-white text-base font-semibold mt-2">Printing</div>
         </div>
         <!-- Ready Pick Up Card -->
-        <div class="bg-blue-500 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
+        <div class="bg-orange-500 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
             <div class="flex items-center justify-between w-full mb-3">
-                <span class="text-4xl font-extrabold text-white">{{ 30 }}</span>
+                <span class="text-4xl font-extrabold text-white">{{ $readyOrders }}</span>
                 <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-200">
                     <!-- Pick Up Icon (Truck) -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,12 +68,12 @@
                     </svg>
                 </span>
             </div>
-            <div class="text-white text-base font-semibold mt-2">Ready Pick Up</div>
+            <div class="text-white text-base font-semibold mt-2">Can Pick Up</div>
         </div>
         <!-- Done Pick Up Card -->
-        <div class="bg-gray-400 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
+        <div class="bg-purple-500 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition flex flex-col items-center">
             <div class="flex items-center justify-between w-full mb-3">
-                <span class="text-4xl font-extrabold text-white">{{ 50 }}</span>
+                <span class="text-4xl font-extrabold text-white">{{ $pickedUpOrders }}</span>
                 <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-200">
                     <!-- Tick Icon (Check Circle) -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,7 +81,7 @@
                     </svg>
                 </span>
             </div>
-            <div class="text-white text-base font-semibold mt-2">Done Pick Up</div>
+            <div class="text-white text-base font-semibold mt-2">Picked Up</div>
         </div>
     </div>
 
@@ -83,39 +99,30 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-center">
-                    <td class="border px-4 py-2">1</td>
-                    <td class="border px-4 py-2">Fabric</td>
-                    <td class="border px-4 py-2">23.5.2025</td>
-                    <td class="border px-4 py-2">5.00 p.m.</td>
-                    <td class="border px-4 py-2">014 312 3546</td>
-                    <td class="border px-4 py-2">
-                        <button class="bg-blue-500 text-white px-3 py-1 rounded">View</button>
-                    </td>
-                </tr>
-                <tr class="text-center">
-                    <td class="border px-4 py-2">2</td>
-                    <td class="border px-4 py-2">A4</td>
-                    <td class="border px-4 py-2">23.5.2025</td>
-                    <td class="border px-4 py-2">5.00 p.m.</td>
-                    <td class="border px-4 py-2">014 312 3546</td>
-                    <td class="border px-4 py-2">
-                        <button class="bg-blue-500 text-white px-3 py-1 rounded">View</button>
-                    </td>
-                </tr>
-
-                <tr class="text-center">
-                    <td class="border px-4 py-2">3</td>
-                    <td class="border px-4 py-2">Fabric</td>
-                    <td class="border px-4 py-2">23.5.2025</td>
-                    <td class="border px-4 py-2">5.00 p.m.</td>
-                    <td class="border px-4 py-2">014 312 3546</td>
-                    <td class="border px-4 py-2">
-                        <button class="bg-blue-500 text-white px-3 py-1 rounded">View</button>
-                    </td>
-                </tr>
-
+                @forelse($orders as $order)
+                    <tr class="text-center">
+                        <td class="border px-4 py-2">{{ $loop->iteration }}</td>
+                        <td class="border px-4 py-2">
+                            @if($order->products && $order->products->count())
+                                {{ $order->products->pluck('name')->join(', ') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="border px-4 py-2">{{ $order->created_at->format('d.m.Y') }}</td>
+                        <td class="border px-4 py-2">{{ $order->created_at->format('h:i A') }}</td>
+                        <td class="border px-4 py-2">{{ $order->user->name ?? '-' }}</td>
+                        <td class="border px-4 py-2">
+                            <a href="{{ route('manage-order') }}" class="bg-blue-500 text-white px-3 py-1 rounded">View</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-4">No orders found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+</div>
 </div>

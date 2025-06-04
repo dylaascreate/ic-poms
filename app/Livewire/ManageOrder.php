@@ -154,4 +154,10 @@ class ManageOrder extends Component
     {
         // You can add validation or auto-calculation here if needed
     }
+
+    public function countWaitingOrderCount()
+{
+    return Order::where('status', 'waiting')->count();
+}
+
 }
