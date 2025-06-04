@@ -90,7 +90,7 @@
         <table class="w-full table-auto border">
             <thead class="bg-gray-200">
                 <tr>
-                    <th class="border px-4 py-2">No</th>
+                    <th class="border px-4 py-2">No order</th>
                     <th class="border px-4 py-2">Product</th>
                     <th class="border px-4 py-2">Date</th>
                     <th class="border px-4 py-2">Time</th>
@@ -100,27 +100,27 @@
             </thead>
             <tbody>
                 @forelse($orders as $order)
-                    <tr class="text-center">
-                        <td class="border px-4 py-2">{{ $loop->iteration }}</td>
-                        <td class="border px-4 py-2">
-                            @if($order->products && $order->products->count())
-                                {{ $order->products->pluck('name')->join(', ') }}
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td class="border px-4 py-2">{{ $order->created_at->format('d.m.Y') }}</td>
-                        <td class="border px-4 py-2">{{ $order->created_at->format('h:i A') }}</td>
-                        <td class="border px-4 py-2">{{ $order->user->name ?? '-' }}</td>
-                        <td class="border px-4 py-2">
-                            <a href="{{ route('manage-order') }}" class="bg-blue-500 text-white px-3 py-1 rounded">View</a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-4">No orders found.</td>
-                    </tr>
-                @endforelse
+    <tr class="text-center">
+        <td class="border px-4 py-2">{{ $order->no_order }}</td>
+        <td class="border px-4 py-2">
+            @if($order->products && $order->products->count())
+                {{ $order->products->pluck('name')->join(', ') }}
+            @else
+                -
+            @endif
+        </td>
+        <td class="border px-4 py-2">{{ $order->created_at->format('d.m.Y') }}</td>
+        <td class="border px-4 py-2">{{ $order->created_at->format('h:i A') }}</td>
+        <td class="border px-4 py-2">{{ $order->user->name ?? '-' }}</td>
+        <td class="border px-4 py-2">
+            <a href="{{ route('manage-order') }}" class="bg-blue-500 text-white px-3 py-1 rounded">View</a>
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="6" class="text-center py-4">No orders found.</td>
+    </tr>
+@endforelse
             </tbody>
         </table>
     </div>
