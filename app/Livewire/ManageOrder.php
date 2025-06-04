@@ -4,95 +4,100 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Models\OrderStatusHistory;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Auth;
 
 class ManageOrder extends Component
 {
     use WithPagination;
 
-    public $no_order, $description, $status, $orderId, $orderOwnerId, $price;
-    public $selectedProducts = []; // [product_id => ['quantity' => x, 'price' => y]]
+    public $no_order, $description, $status, $orderId, $orderOwnerId, $price = 0;
+    public $selectedProducts = [];
     public $productList = [];
+    public $showForm = false;
 
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
         'no_order' => 'required|string',
         'description' => 'required|string',
-        'status' => 'required|string|in:waiting,printing,ready,picked_up',
+        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
+        'orderOwnerId' => 'required|exists:users,id',
         'selectedProducts' => 'required|array|min:1',
         'selectedProducts.*.product_id' => 'required|exists:products,id',
         'selectedProducts.*.quantity' => 'required|integer|min:1',
         'selectedProducts.*.price' => 'required|numeric|min:0',
     ];
 
+    protected $listeners = ['delete' => 'delete'];
 
     public function mount()
     {
         $this->status = 'waiting';
         $this->productList = Product::all();
+        $this->selectedProducts = [];
     }
 
     public function render()
     {
         return view('livewire.manage-order', [
-            'orders' => Order::with(['user', 'products', 'latestStatus'])->paginate(10),
+            'orders' => Order::with(['user', 'products', 'latestStatus'])
+                ->orderByDesc('updated_at') // <-- This makes the latest updated/created order first
+                ->paginate(10),
             'orderOwners' => User::all(),
             'products' => $this->productList,
         ]);
     }
 
-    // SAVE method
     public function save()
     {
+        $this->calculateTotal();
         $this->validate();
 
-        $ownerId = $this->orderOwnerId ?? Auth::id();
-
-        $this->price = 0;
-        $productData = [];
-
-        foreach ($this->selectedProducts as $product) {
-            $this->price += $product['quantity'] * $product['price'];
-            $productData[$product['product_id']] = [
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-            ];
-        }
-
-        $data = [
-            'no_order' => $this->no_order,
-            'description' => $this->description,
-            'price' => $this->price,
-            'status' => $this->status,
-            'user_id' => $ownerId,
-        ];
-
         if ($this->orderId) {
+            // Update existing order
             $order = Order::findOrFail($this->orderId);
-            $order->update($data);
-        } else {
-            $order = Order::create($data);
-        }
-
-        $order->products()->sync($productData);
-
-        $lastStatus = $order->latestStatus?->status ?? null;
-        if ($lastStatus !== $this->status) {
-            OrderStatusHistory::create([
-                'order_id' => $order->id,
+            $order->update([
+                'no_order' => $this->no_order,
+                'description' => $this->description,
+                'price' => $this->price,
+                'user_id' => $this->orderOwnerId,
                 'status' => $this->status,
             ]);
+
+            // Sync products
+            $order->products()->detach();
+            foreach ($this->selectedProducts as $product) {
+                $order->products()->attach($product['product_id'], [
+                    'quantity' => $product['quantity'],
+                    'price' => $product['price'],
+                ]);
+            }
+        } else {
+            // Create new order
+            $order = Order::create([
+                'no_order' => $this->no_order,
+                'description' => $this->description,
+                'price' => $this->price,
+                'user_id' => $this->orderOwnerId,
+                'status' => $this->status,
+            ]);
+
+            foreach ($this->selectedProducts as $product) {
+                $order->products()->attach($product['product_id'], [
+                    'quantity' => $product['quantity'],
+                    'price' => $product['price'],
+                ]);
+            }
         }
 
-        $this->dispatch('orderSaved', message: 'Order saved successfully.');
-        $this->resetInput();
-    }
+        $this->showForm = false;
 
+        $this->resetInput();
+        session()->flash('message', 'Order saved successfully!');
+        $this->dispatch('orderSaved', message: 'Order saved successfully!');
+    }
 
     public function edit($id)
     {
@@ -106,7 +111,6 @@ class ManageOrder extends Component
         $this->orderOwnerId = $order->user_id;
 
         $this->selectedProducts = [];
-
         foreach ($order->products as $product) {
             $this->selectedProducts[] = [
                 'product_id' => $product->id,
@@ -114,8 +118,9 @@ class ManageOrder extends Component
                 'price' => $product->pivot->price,
             ];
         }
-    }
 
+        $this->showForm = true; // <-- This opens the modal
+    }
 
     public function delete($id)
     {
@@ -127,7 +132,7 @@ class ManageOrder extends Component
     {
         $this->orderId = null;
         $this->no_order = '';
-        $this->description = '';
+        $this->description = ''; // Use order_desc
         $this->price = 0;
         $this->status = 'waiting';
         $this->orderOwnerId = null;
@@ -147,17 +152,51 @@ class ManageOrder extends Component
     {
         unset($this->selectedProducts[$index]);
         $this->selectedProducts = array_values($this->selectedProducts);
+        $this->calculateTotal();
     }
 
-    // Optional helper to update product selection dynamically (add/remove)
-    public function updatedSelectedProducts($value, $key)
+    public function updatedSelectedProducts($value, $name)
     {
-        // You can add validation or auto-calculation here if needed
+        // $name example: "1.product_id"
+        $parts = explode('.', $name);
+        if (count($parts) === 2 && $parts[1] === 'product_id') {
+            $index = $parts[0];
+            $productId = $value;
+            if ($productId) {
+                $product = \App\Models\Product::find($productId);
+                if ($product) {
+                    $this->selectedProducts[$index]['quantity'] = 1;
+                    $this->selectedProducts[$index]['price'] = $product->price ?? 0;
+                }
+            } else {
+                $this->selectedProducts[$index]['quantity'] = 1;
+                $this->selectedProducts[$index]['price'] = 0;
+            }
+        }
+        $this->calculateTotal();
+    }
+
+    public function calculateTotal()
+    {
+        $this->price = collect($this->selectedProducts)
+            ->sum(function ($item) {
+                return (float)($item['quantity'] ?? 0) * (float)($item['price'] ?? 0);
+            });
     }
 
     public function countWaitingOrderCount()
-{
-    return Order::where('status', 'waiting')->count();
-}
+    {
+        return Order::where('status', 'waiting')->count();
+    }
 
+    public function showAddForm()
+    {
+        $this->resetInput(); // Optional: clear form fields
+        $this->showForm = true;
+    }
+
+    public function hideForm()
+    {
+        $this->showForm = false;
+    }
 }
