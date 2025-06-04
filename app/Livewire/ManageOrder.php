@@ -21,9 +21,9 @@ class ManageOrder extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'no_order' => 'required|string',
+        'no_order' => 'required|string|max:20|unique:orders,no_order,',
         'description' => 'required|string',
-        'status' => 'required|string|in:waiting,printing,ready,picked_up',
+        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
         'selectedProducts' => 'required|array|min:1',
         'selectedProducts.*.product_id' => 'required|exists:products,id',
         'selectedProducts.*.quantity' => 'required|integer|min:1',
@@ -39,6 +39,7 @@ class ManageOrder extends Component
 
     public function render()
     {
+        $data['orders'] = Order::get(); // Get all orders
         return view('livewire.manage-order', [
             'orders' => Order::with(['user', 'products', 'latestStatus'])->paginate(10),
             'orderOwners' => User::all(),
@@ -49,10 +50,9 @@ class ManageOrder extends Component
     // SAVE method
     public function save()
     {
-        $this->validate();
+        $this->validate(); // This already checks for no_order and others
 
         $ownerId = $this->orderOwnerId ?? Auth::id();
-
         $this->price = 0;
         $productData = [];
 
@@ -62,6 +62,11 @@ class ManageOrder extends Component
                 'quantity' => $product['quantity'],
                 'price' => $product['price'],
             ];
+        }
+
+        if (empty($this->no_order)) {
+            $this->dispatch('orderError', message: 'Order number cannot be empty.');
+            return;
         }
 
         $data = [
@@ -76,6 +81,7 @@ class ManageOrder extends Component
             $order = Order::findOrFail($this->orderId);
             $order->update($data);
         } else {
+            // dd($this->no_order, $data);
             $order = Order::create($data);
         }
 
@@ -92,6 +98,7 @@ class ManageOrder extends Component
         $this->dispatch('orderSaved', message: 'Order saved successfully.');
         $this->resetInput();
     }
+
 
 
     public function edit($id)
@@ -148,16 +155,30 @@ class ManageOrder extends Component
         unset($this->selectedProducts[$index]);
         $this->selectedProducts = array_values($this->selectedProducts);
     }
-
-    // Optional helper to update product selection dynamically (add/remove)
     public function updatedSelectedProducts($value, $key)
     {
-        // You can add validation or auto-calculation here if needed
+        if (str_ends_with($key, 'product_id')) {
+            [$index,] = explode('.', $key);
+            $product = Product::find($value);
+            if ($product) {
+                $this->selectedProducts[$index]['price'] = $product->price;
+            }
+        }
+
+        $this->price = 0;
+        foreach ($this->selectedProducts as $product) {
+            if (isset($product['quantity'], $product['price'])) {
+                $this->price += $product['quantity'] * $product['price'];
+            }
+        }
     }
+
 
     public function countWaitingOrderCount()
 {
     return Order::where('status', 'waiting')->count();
 }
+
+
 
 }
