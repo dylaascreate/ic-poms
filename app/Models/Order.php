@@ -4,14 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\OrderStatusHistory;
 
 class Order extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'no_order',
+        'description',
+        'price',
+        'status',
         'user_id',
-        'total',
     ];
 
     // An order belongs to a user
@@ -24,7 +28,23 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)
-                    ->withPivot('quantity', 'price') // price at time of order
+                    ->withPivot('quantity', 'price')
                     ->withTimestamps();
     }
+
+    public function statusHistories()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
+    public function latestStatus()
+    {
+        return $this->hasOne(OrderStatusHistory::class)->latestOfMany();
+    }
+    
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
 }
