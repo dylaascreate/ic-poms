@@ -192,8 +192,8 @@
 
     {{-- SWEETALERT SCRIPT --}}
     <script>
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('orderSaved', (res) => {
+        document.addEventListener('livewire:init', function(){
+            Livewire.on('orderSaved', function(res){
                 Swal.fire('Success!', res.message, 'success');
             });
 

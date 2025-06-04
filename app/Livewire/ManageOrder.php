@@ -20,8 +20,9 @@ class ManageOrder extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'no_order' => 'required|string',
+        'no_order' => 'required|string|max:20|unique:orders,no_order,',
         'description' => 'required|string',
+        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
         'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
         'orderOwnerId' => 'required|exists:users,id',
         'selectedProducts' => 'required|array|min:1',
@@ -41,6 +42,7 @@ class ManageOrder extends Component
 
     public function render()
     {
+        $data['orders'] = Order::get(); // Get all orders
         return view('livewire.manage-order', [
             'orders' => Order::with(['user', 'products', 'latestStatus'])
                 ->orderByDesc('updated_at') // <-- This makes the latest updated/created order first
@@ -52,6 +54,32 @@ class ManageOrder extends Component
 
     public function save()
     {
+        $this->validate(); // This already checks for no_order and others
+
+        $ownerId = $this->orderOwnerId ?? Auth::id();
+        $this->price = 0;
+        $productData = [];
+
+        foreach ($this->selectedProducts as $product) {
+            $this->price += $product['quantity'] * $product['price'];
+            $productData[$product['product_id']] = [
+                'quantity' => $product['quantity'],
+                'price' => $product['price'],
+            ];
+        }
+
+        if (empty($this->no_order)) {
+            $this->dispatch('orderError', message: 'Order number cannot be empty.');
+            return;
+        }
+
+        $data = [
+            'no_order' => $this->no_order,
+            'description' => $this->description,
+            'price' => $this->price,
+            'status' => $this->status,
+            'user_id' => $ownerId,
+        ];
         $this->calculateTotal();
         $this->validate();
 
@@ -75,6 +103,16 @@ class ManageOrder extends Component
                 ]);
             }
         } else {
+            // dd($this->no_order, $data);
+            $order = Order::create($data);
+        }
+
+        $order->products()->sync($productData);
+
+        $lastStatus = $order->latestStatus?->status ?? null;
+        if ($lastStatus !== $this->status) {
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
             // Create new order
             $order = Order::create([
                 'no_order' => $this->no_order,
