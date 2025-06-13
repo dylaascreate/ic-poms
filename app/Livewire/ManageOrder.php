@@ -5,8 +5,10 @@ namespace App\Livewire;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\OrderStatusHistory;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class ManageOrder extends Component
 {
@@ -52,90 +54,56 @@ class ManageOrder extends Component
         ]);
     }
 
-    public function save()
-    {
-        $this->validate(); // This already checks for no_order and others
+public function save()
+{
+    $this->validate([
+        'no_order' => 'required|string|max:20|unique:orders,no_order,' . ($this->orderId ?? 'NULL') . ',id',
+        'description' => 'required|string',
+        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
+        'orderOwnerId' => 'required|exists:users,id',
+        'selectedProducts' => 'required|array|min:1',
+        'selectedProducts.*.product_id' => 'required|exists:products,id',
+        'selectedProducts.*.quantity' => 'required|integer|min:1',
+        'selectedProducts.*.price' => 'required|numeric|min:0',
+    ]);
 
-        $ownerId = $this->orderOwnerId ?? Auth::id();
-        $this->price = 0;
-        $productData = [];
+    $this->price = 0;
+    $productData = [];
+    foreach ($this->selectedProducts as $product) {
+        $this->price += $product['quantity'] * $product['price'];
+        $productData[$product['product_id']] = [
+            'quantity' => $product['quantity'],
+            'price' => $product['price'],
+        ];
+    }
 
-        foreach ($this->selectedProducts as $product) {
-            $this->price += $product['quantity'] * $product['price'];
-            $productData[$product['product_id']] = [
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-            ];
-        }
-
-        if (empty($this->no_order)) {
-            $this->dispatch('orderError', message: 'Order number cannot be empty.');
-            return;
-        }
-
-        $data = [
+    if ($this->orderId) {
+        // Update existing order by ID
+        $order = Order::findOrFail($this->orderId);
+        $order->update([
             'no_order' => $this->no_order,
             'description' => $this->description,
-            'price' => $this->price,
             'status' => $this->status,
-            'user_id' => $ownerId,
-        ];
-        $this->calculateTotal();
-        $this->validate();
-
-        if ($this->orderId) {
-            // Update existing order
-            $order = Order::findOrFail($this->orderId);
-            $order->update([
-                'no_order' => $this->no_order,
-                'description' => $this->description,
-                'price' => $this->price,
-                'user_id' => $this->orderOwnerId,
-                'status' => $this->status,
-            ]);
-
-            // Sync products
-            $order->products()->detach();
-            foreach ($this->selectedProducts as $product) {
-                $order->products()->attach($product['product_id'], [
-                    'quantity' => $product['quantity'],
-                    'price' => $product['price'],
-                ]);
-            }
-        } else {
-            // dd($this->no_order, $data);
-            $order = Order::create($data);
-        }
-
-        $order->products()->sync($productData);
-
-        $lastStatus = $order->latestStatus?->status ?? null;
-        if ($lastStatus !== $this->status) {
-            OrderStatusHistory::create([
-                'order_id' => $order->id,
-            // Create new order
-            $order = Order::create([
-                'no_order' => $this->no_order,
-                'description' => $this->description,
-                'price' => $this->price,
-                'user_id' => $this->orderOwnerId,
-                'status' => $this->status,
-            ]);
-
-            foreach ($this->selectedProducts as $product) {
-                $order->products()->attach($product['product_id'], [
-                    'quantity' => $product['quantity'],
-                    'price' => $product['price'],
-                ]);
-            }
-        }
-
-        $this->showForm = false;
-
-        $this->resetInput();
-        session()->flash('message', 'Order saved successfully!');
-        $this->dispatch('orderSaved', message: 'Order saved successfully!');
+            'user_id' => $this->orderOwnerId,
+            'price' => $this->price,
+        ]);
+    } else {
+        // Create new order
+        $order = Order::create([
+            'no_order' => $this->no_order,
+            'description' => $this->description,
+            'status' => $this->status,
+            'user_id' => $this->orderOwnerId,
+            'price' => $this->price,
+        ]);
     }
+
+    // Sync products
+    $order->products()->sync($productData);
+
+    $this->showForm = false;
+    $this->dispatch('orderSaved', message: 'Order saved successfully!');
+}
 
     public function edit($id)
     {
@@ -144,9 +112,9 @@ class ManageOrder extends Component
         $this->orderId = $order->id;
         $this->no_order = $order->no_order;
         $this->description = $order->description;
-        $this->price = $order->price;
         $this->status = $order->status;
         $this->orderOwnerId = $order->user_id;
+        $this->price = $order->price;
 
         $this->selectedProducts = [];
         foreach ($order->products as $product) {
@@ -157,7 +125,7 @@ class ManageOrder extends Component
             ];
         }
 
-        $this->showForm = true; // <-- This opens the modal
+        $this->showForm = true;
     }
 
     public function delete($id)

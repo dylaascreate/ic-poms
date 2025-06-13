@@ -111,7 +111,12 @@
                         <div class="px-8 py-6">
                             <form wire:submit.prevent="save" class="space-y-4" novalidate>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <flux:input wire:model.defer="no_order" label="No Order" placeholder="Order Number" required />
+                                    <input 
+                                        type="text"
+                                        wire:model.defer="no_order"
+                                        class="form-input"
+                                        placeholder="Order Number"
+                                    />
                                     <flux:textarea wire:model.defer="description" label="Description" placeholder="Description" required />
                                     <flux:select wire:model.defer="orderOwnerId" label="User" required>
                                         <option value="">Select User</option>
