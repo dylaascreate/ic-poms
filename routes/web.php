@@ -1,6 +1,5 @@
 <?php
 
-use App\Livewire\AboutPage;
 use App\Livewire\ProductIndex;
 use App\Livewire\OrderUser;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +12,6 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
-
-// About page route
-Route::get('/about', AboutPage::class)->name('about');
 
 // Common dashboard route
 Route::get('dashboard', function () {
