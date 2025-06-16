@@ -12,16 +12,17 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
+// <<<<<<< HEAD
+// =======
+// Route::get('/about', AboutPage::class)->name('about');
+// >>>>>>> ca125c375df63c9f057023727fe992960ecb8298
 
 // Common dashboard route
 Route::get('dashboard', function () {
     $user = Auth::user();
 
-    // Route::get('about', AboutPage::class)->name('about');
-
     if ($user->role === 'admin') {
         return redirect()->route('admin.dashboard');
-        // Route::get('about', AboutPage::class)->name('about');
     }
 
     return view('dashboard');
