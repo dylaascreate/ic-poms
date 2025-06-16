@@ -7,15 +7,13 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Admin\ManageOrder;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
-// <<<<<<< HEAD
-// =======
-// Route::get('/about', AboutPage::class)->name('about');
-// >>>>>>> ca125c375df63c9f057023727fe992960ecb8298
+
 
 // Common dashboard route
 Route::get('dashboard', function () {
@@ -30,8 +28,8 @@ Route::get('dashboard', function () {
 
 // Admin-only route
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('dashboard', AdminDashboard::class)
-    ->name('dashboard');
+    Route::get('dashboard', AdminDashboard::class)->name('dashboard');
+    Route::get('manage-order', ManageOrder::class)->name('manage-order'); 
 });
 
 
@@ -51,5 +49,6 @@ Route::middleware(['auth'])->group(function () {
 
    //ORDER
    Route::get('/order/{productId}', OrderUser::class)->name('order.form');
+ 
 
 require __DIR__.'/auth.php';
