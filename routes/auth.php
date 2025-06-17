@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auths\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 use App\Livewire\Auth\ConfirmPassword;
