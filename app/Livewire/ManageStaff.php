@@ -6,6 +6,9 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class ManageStaff extends Component
 {
@@ -72,14 +75,14 @@ class ManageStaff extends Component
         $this->password = ''; // Leave empty unless changed
     }
 
-    public function delete($id)
-    {
-        $user = User::find($id);
-        $user->delete();
+    // public function delete($id)
+    // {
+    //     $user = User::find($id);
+    //     $user->delete();
 
-        session()->flash('message', 'Staff deleted successfully.');
-        $this->dispatch('staffSaved', message: 'Staff deleted successfully.');
-    }
+    //     session()->flash('message', 'Staff deleted successfully.');
+    //     $this->dispatch('staffSaved', message: 'Staff deleted successfully.');
+    // }
 
     public function resetInput()
     {
@@ -90,4 +93,33 @@ class ManageStaff extends Component
         $this->position = '';
         $this->staffId = null;
     }
+
+    #[On('delete')]
+    public function delete($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+
+            session()->flash('message', 'User Deleted Successfully.');
+            $this->dispatch('userSaved', message: 'User Deleted Successfully.');
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                // Foreign key constraint violation
+                session()->flash('error', 'Cannot delete user. The user is linked to other records.');
+                $this->dispatch('userDeleteFailed', message: 'Cannot delete user. The user is linked to other records.');
+            } else {
+                session()->flash('error', 'Database error occurred.');
+                $this->dispatch('userDeleteFailed', message: 'Database error occurred.');
+            }
+
+            Log::error('User delete failed (QueryException): ' . $e->getMessage());
+        } catch (\Exception $e) {
+            session()->flash('error', 'Unexpected error: ' . $e->getMessage());
+            $this->dispatch('userDeleteFailed', message: 'Unexpected error: ' . $e->getMessage());
+
+            Log::error('User delete failed (Exception): ' . $e->getMessage());
+        }
+    }
+
 }

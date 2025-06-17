@@ -9,6 +9,7 @@ use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 
 class ManageOrder extends Component
 {
@@ -21,7 +22,7 @@ class ManageOrder extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'no_order' => 'required|string|max:20|unique:orders,no_order,',
+        'no_order' => 'required|string|max:20',
         'description' => 'required|string',
         'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
         'selectedProducts' => 'required|array|min:1',
@@ -30,12 +31,15 @@ class ManageOrder extends Component
         'selectedProducts.*.price' => 'required|numeric|min:0',
     ];
 
+    public $isProduction = false;
 
     public function mount()
     {
         $this->status = 'waiting';
         $this->productList = Product::all();
+        $this->isProduction = Auth::user()->position === 'Production Staff'; // Adjust field name if needed
     }
+
 
     public function render()
     {
@@ -50,7 +54,31 @@ class ManageOrder extends Component
     // SAVE method
     public function save()
     {
-        $this->validate(); // This already checks for no_order and others
+        // Check if the user is a production staff
+        $isProduction = Auth::user()->position === 'Production Staff'; // Adjust if role field differs
+
+        if ($isProduction && $this->orderId) {
+            // Only allow status update
+            $order = Order::findOrFail($this->orderId);
+
+            if ($order->status !== $this->status) {
+                $order->update(['status' => $this->status]);
+
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => $this->status,
+                ]);
+
+                $this->dispatch('orderSaved', message: 'Order status updated successfully.');
+            } else {
+                $this->dispatch('orderSaved', message: 'No changes to status.');
+            }
+
+            return;
+        }
+
+        // Validate as usual for non-production staff
+        $this->validate();
 
         $ownerId = $this->orderOwnerId ?? Auth::id();
         $this->price = 0;
@@ -81,7 +109,6 @@ class ManageOrder extends Component
             $order = Order::findOrFail($this->orderId);
             $order->update($data);
         } else {
-            // dd($this->no_order, $data);
             $order = Order::create($data);
         }
 
@@ -98,6 +125,7 @@ class ManageOrder extends Component
         $this->dispatch('orderSaved', message: 'Order saved successfully.');
         $this->resetInput();
     }
+
 
 
 
@@ -124,11 +152,11 @@ class ManageOrder extends Component
     }
 
 
-    public function delete($id)
-    {
-        Order::findOrFail($id)->delete();
-        $this->dispatch('orderSaved', message: 'Order deleted successfully.');
-    }
+    // public function delete($id)
+    // {
+    //     Order::findOrFail($id)->delete();
+    //     $this->dispatch('orderSaved', message: 'Order deleted successfully.');
+    // }
 
     public function resetInput()
     {
@@ -155,6 +183,7 @@ class ManageOrder extends Component
         unset($this->selectedProducts[$index]);
         $this->selectedProducts = array_values($this->selectedProducts);
     }
+
     public function updatedSelectedProducts($value, $key)
     {
         if (str_ends_with($key, 'product_id')) {
@@ -180,5 +209,12 @@ class ManageOrder extends Component
 }
 
 
+    #[On('delete')]
+    public function delete($id){
+        $order = Order::find($id);
+        $order->delete();
+        session()->flash('message', 'Order Deleted Successfully.');
+        $this->dispatch('orderSaved', message:'Order Deleted Successfully.');
+    }
 
 }

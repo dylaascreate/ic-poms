@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class ManageCustomer extends Component
 {
@@ -77,14 +78,14 @@ class ManageCustomer extends Component
         $this->password = ''; // Leave empty unless changed
     }
 
-    public function delete($id)
-    {
-        $user = User::find($id);
-        $user->delete();
+    // public function delete($id)
+    // {
+    //     $user = User::find($id);
+    //     $user->delete();
 
-        session()->flash('message', 'Customer deleted successfully.');
-        $this->dispatch('customerSaved', message: 'Customer deleted successfully.');
-    }
+    //     session()->flash('message', 'Customer deleted successfully.');
+    //     $this->dispatch('customerSaved', message: 'Customer deleted successfully.');
+    // }
 
     public function resetInput()
     {
@@ -93,5 +94,13 @@ class ManageCustomer extends Component
         $this->password = '';
         $this->role = 'user';
         $this->customerId = null;
+    }
+
+     #[On('delete')]
+    public function delete($id){
+        $user = User::find($id);
+        $user->delete();
+        session()->flash('message', 'User Deleted Successfully.');
+        $this->dispatch('userSaved', message:'User Deleted Successfully.');
     }
 }

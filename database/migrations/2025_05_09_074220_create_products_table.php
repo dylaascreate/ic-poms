@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 8, 2);
-            $table->string('image')->nullable(); // Add this line inside the products table migration
-            $table->timestamps();
+            $table->string('image')->nullable();
         });
     }
 

@@ -5,6 +5,16 @@
         <div class="text-center text-green-600 font-bold mb-4">{{ session('message') }}</div>
     @endif
 
+    @php
+        $user = auth()->user();
+        $isAdmin = $user && $user->role === 'admin';
+
+        $canManageAll = $isAdmin && in_array($user->position, ['SuperAdmin', 'Manager', 'Designer']);
+        $canViewOnly = $isAdmin && $user->position === 'Marketing';
+        $canEditStatusOnly = $isAdmin && $user->position === 'Production Staff';
+    @endphp
+
+
     {{-- ORDER TABLE --}}
     <div class="flex flex-col gap-6">
         <flux:heading class="px-10 flex items-center gap-2" size="xl">
@@ -58,9 +68,18 @@
                                         @endforeach
                                     </ul>
                                 </td>
-                                <td class="p-2 align-top space-x-2">
+                                {{-- <td class="p-2 align-top space-x-2">
                                     <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
                                     <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
+                                </td> --}}
+                                <td class="p-2 align-top space-x-2">
+                                    @if($canManageAll || $canEditStatusOnly)
+                                        <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
+                                    @endif
+
+                                    @if($canManageAll)
+                                        <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -86,10 +105,17 @@
             <div class="px-10 py-8">
                 <form wire:submit.prevent="save" class="space-y-6" novalidate>
                     <div class="grid grid-cols-2 gap-6">
-                        <flux:input wire:model.defer="no_order" label="No Order" placeholder="Order Number" required />
+                        <flux:input 
+                            wire:model.defer="no_order" 
+                            label="No Order" 
+                            placeholder="Order Number" 
+                            required 
+                            :disabled="$orderId !== null || $isProduction"
+                        />
+                                                
                         <flux:input wire:model.defer="price" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
-                        <flux:textarea wire:model.defer="description" label="Description" placeholder="Description" required />
-                        <flux:select wire:model.defer="orderOwnerId" label="User" required>
+                        <flux:textarea wire:model.defer="description" label="Description" placeholder="Description" required :disabled="$isProduction"/>
+                        <flux:select wire:model.defer="orderOwnerId" label="User" required :disabled="$isProduction">
                             <option value="">Select User</option>
                             @foreach($orderOwners as $owner)
                                 <option value="{{ $owner->id }}">{{ $owner->name }}</option>
@@ -101,11 +127,15 @@
                             <option value="can_pick_up">Can Pick Up</option>
                             <option value="picked_up">Picked Up</option>
                         </flux:select>
-                    </div>
 
+                    </div>
+                @if(!$isProduction)
+                    <button type="button" wire:click="addProduct" class="...">Add Another Product</button> 
+                @endif
+                <div class="{{ $isProduction ? 'pointer-events-none opacity-60' : '' }}">        
                     {{-- Product Selection --}}
                     <div class="mt-6">
-                        <label class="block font-bold text-sm text-gray-700 mb-2">Select Products</label>
+                        <label class="block font-bold text-sm text-gray-700 mb-2" required><span class="text-red-500">*</span> Select Products</label>
                         @foreach ($selectedProducts as $index => $product)
                             <div class="border p-4 rounded-xl mb-4">
                                 <div class="mb-2">
@@ -148,8 +178,9 @@
 
                         <button type="button" wire:click="addProduct" class="mt-2 px-4 py-2 bg-sky-500 text-white rounded-md text-sm">
                             Add Another Product
-                        </button>
+                        </button> 
                     </div>
+                </div>
 
                     {{-- Submit Button --}}
                     <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6 bg-green-500 text-white rounded-md text-sm">
@@ -170,7 +201,7 @@
             Livewire.on('confirmDelete', (id) => {
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "This order will be deleted.",
+                    text: "This action cannot be undone!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -178,7 +209,8 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Livewire.emit('delete', id);
+                        // Livewire.emit('delete', id);
+                        Livewire.dispatch('delete', { id: id });
                     }
                 });
             });

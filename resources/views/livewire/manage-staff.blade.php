@@ -117,6 +117,11 @@
                     }
                 });
             });
+            Livewire.on('userDeleteFailed', e => alert(e.message));
+            Livewire.on('userSaved', e => alert(e.message));
         });
-    </script>
+        
+
+</script>
+
 </div>
