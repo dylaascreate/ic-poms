@@ -24,12 +24,19 @@ class ManageCustomer extends Component
         ];
     }
 
+    // public function render()
+    // {
+    //     // Show both user and admin in the list (since you can assign roles now)
+    //     $customers = User::paginate(10);
+    //     return view('livewire.manage-customer', ['customers' => $customers]);
+    // }
+
     public function render()
-    {
-        // Show both user and admin in the list (since you can assign roles now)
-        $customers = User::paginate(10);
-        return view('livewire.manage-customer', ['customers' => $customers]);
-    }
+{
+    return view('livewire.manage-customer', [
+        'customers' => User::where('role', 'user')->paginate(10),
+    ]);
+}
 
     public function save()
     {
