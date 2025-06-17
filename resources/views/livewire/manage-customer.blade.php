@@ -1,9 +1,12 @@
 <div>
-    {{-- Livewire must be inside a div --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {{-- Success message --}}
-    <div class="text-center text-green-600 bold">{{ session('message') }}</div>
+    @if(session('message'))
+        <div class="text-center text-green-600 font-semibold mt-4">
+            {{ session('message') }}
+        </div>
+    @endif
 
     {{-- Customer Table --}}
     <div class="flex flex-col gap-6">
@@ -15,39 +18,50 @@
         </flux:heading>
 
         <div class="rounded-xl border shadow-sm bg-white overflow-x-auto">
-    <div class="px-10 py-8">
-        <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
-            <thead>
-                <tr class="bg-yellow-500 text-white uppercase text-sm">
-                    <th class="p-2 text-center">ID</th>
-                    <th class="p-2 text-left">Name</th>
-                    <th class="p-2 text-left">Email</th>
-                    <th class="p-2 text-center">Role</th>
-                    <th class="p-2 text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($customers as $cs)
-                    <tr class="{{ $loop->even ? 'bg-yellow-200' : 'bg-yellow-300' }} hover:bg-blue-200 transition duration-200 border-b">
-                        <td class="p-2 text-center">{{ $cs->id }}</td>
-                        <td class="p-2">{{ $cs->name }}</td>
-                        <td class="p-2">{{ $cs->email }}</td>
-                        <td class="p-2 text-center">{{ ucfirst($cs->role) }}</td>
-                        <td class="p-2 text-center space-x-2">
-                            <flux:button wire:click="edit({{ $cs->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" />
-                            <flux:button wire:click="$dispatch('confirmDelete', {{ $cs->id }})" icon="trash" variant="danger" />
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            <div class="px-10 py-8">
+                <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
+                    <thead>
+                        <tr class="bg-yellow-500 text-white uppercase text-sm">
+                            <th class="p-2 text-center">ID</th>
+                            <th class="p-2 text-left">Name</th>
+                            <th class="p-2 text-left">Email</th>
+                            <th class="p-2 text-center">Role</th>
+                            <th class="p-2 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($customers as $cs)
+                            <tr>
+                                <td class="p-2 text-center">
+                                    {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}
+                                </td>
+                                <td class="p-2">{{ $cs->name }}</td>
+                                <td class="p-2">{{ $cs->email }}</td>
+                                <td class="p-2 text-center">{{ ucfirst($cs->role) }}</td>
+                                <td class="p-2 text-center space-x-2">
+                                    <flux:button 
+                                        wire:click="edit({{ $cs->id }})" 
+                                        icon="pencil-square" 
+                                        variant="primary" 
+                                        class="bg-sky-500 text-white rounded-md text-sm" 
+                                    />
+                                    <flux:button 
+                                        wire:click="$dispatch('confirmDelete', {{ $cs->id }})" 
+                                        icon="trash" 
+                                        variant="danger" 
+                                        class="bg-red-500 text-white rounded-md text-sm"
+                                    />
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
 
-        <div class="mt-6 flex justify-center">
-            {{ $customers->links('pagination::tailwind') }}
+                <div class="mt-6 flex justify-center">
+                    {{ $customers->links('pagination::tailwind') }}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
     </div>
     <br>
 
@@ -74,7 +88,7 @@
 
                         {{-- Submit button --}}
                         <div class="flex justify-start w-full">
-                                <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6  bg-green-500 text-white rounded-md text-sm" >
+                            <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6 bg-green-500 text-white rounded-md text-sm">
                                 {{ $customerId ? 'Edit' : 'Add' }}
                             </flux:button>
                         </div>

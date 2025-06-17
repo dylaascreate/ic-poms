@@ -35,9 +35,9 @@
         @foreach($products as $index => $pt)
         <tr class="{{ $index % 2 === 0 ? 'bg-rose-300' : 'bg-rose-200' }} hover:bg-blue-200 transition duration-200">
             <td class="py-3 px-4 text-center font-medium">{{ $pt->id }}</td>
-            <td class="py-3 px-4">
+            <td class="py-3 px-4 text-center">
                 @if ($pt->image)
-                    <img src="{{ asset('storage/' . $pt->image) }}" alt="Product Image" class="h-16 w-16 object-cover rounded-md border">
+                    <img src="{{ asset('storage/' . $pt->image) }}" alt="Product Image" class="h-16 w-16 object-cover rounded-md border mx-auto">
                 @else
                     <span class="text-gray-400 italic">No Image</span>
                 @endif
@@ -45,9 +45,11 @@
             <td class="py-3 px-4 font-semibold text-gray-800">{{ $pt->name }}</td>
             <td class="py-3 px-4 text-gray-700">{{ $pt->description }}</td>
             <td class="py-3 px-4 text-center font-medium text-green-700">RM {{ number_format($pt->price, 2) }}</td>
-            <td class="py-3 px-4 text-center flex justify-center gap-2">
-                <flux:button wire:click="edit({{ $pt->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm"></flux:button>
-                <flux:button wire:click="$dispatch('confirmDelete',{{ $pt->id }})" icon="trash" variant="danger"></flux:button>
+            <td class="py-3 px-4 text-center">
+                <div class="flex justify-center gap-2">
+                    <flux:button wire:click="edit({{ $pt->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm"></flux:button>
+                    <flux:button wire:click="$dispatch('confirmDelete',{{ $pt->id }})" icon="trash" variant="danger"></flux:button>
+                </div>
             </td>
         </tr>
         @endforeach

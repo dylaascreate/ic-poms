@@ -87,4 +87,6 @@ class ManageCustomer extends Component
         $this->role = 'user';
         $this->customerId = null;
     }
+
+    protected $listeners = ['delete' => 'delete'];
 }
