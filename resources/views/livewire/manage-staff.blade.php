@@ -76,11 +76,11 @@
                         <div class="flex flex-col">
                             <label for="position" class="font-medium text-sm text-gray-700 mb-1">Position</label>
                             <select wire:model="position" id="position" class="border rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
-                                <option value="superadmin">Superadmin</option>
-                                <option value="designer">Designer</option>
-                                <option value="manager">Manager</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="production staff">Production Staff</option>
+                                <option value="SuperAdmin">SuperAdmin</option>
+                                <option value="Designer">Designer</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Production Staff">Production Staff</option>
                             </select>
                         </div>
 

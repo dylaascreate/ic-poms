@@ -30,7 +30,9 @@
                         <flux:navlist.item icon="squares-plus" badge="{{ \App\Models\Product::count() }}" :href="route('manage-product')" :current="request()->routeIs('manage-product')" wire:navigate>Manage Products</flux:navlist.item>
                         <flux:navlist.item icon="list-bullet" badge="{{ \App\Models\Order::count() }}" :href="route('manage-order')" :current="request()->routeIs('manage-order')" wire:navigate>Manage Orders</flux:navlist.item>
                         <flux:navlist.item icon="user-plus" :href="route('manage-customer')" :current="request()->routeIs('manage-customer')" wire:navigate>Manage Customers</flux:navlist.item>
-                        <flux:navlist.item icon="star" :href="route('manage-staff')" :current="request()->routeIs('manage-customer')" wire:navigate>Manage Staffs</flux:navlist.item>
+                        @if(auth()->check() && auth()->user()->role === 'admin' && in_array(auth()->user()->position, ['SuperAdmin', 'Manager']))
+                            <flux:navlist.item icon="star" :href="route('manage-staff')" :current="request()->routeIs('manage-staff')" wire:navigate>Manage Staffs</flux:navlist.item>
+                        @endif
                     </flux:navlist.group>
                 @endif
 
