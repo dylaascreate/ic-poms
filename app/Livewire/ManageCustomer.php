@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class ManageCustomer extends Component
 {
@@ -24,12 +25,19 @@ class ManageCustomer extends Component
         ];
     }
 
+    // public function render()
+    // {
+    //     // Show both user and admin in the list (since you can assign roles now)
+    //     $customers = User::paginate(10);
+    //     return view('livewire.manage-customer', ['customers' => $customers]);
+    // }
+
     public function render()
-    {
-        // Show both user and admin in the list (since you can assign roles now)
-        $customers = User::paginate(10);
-        return view('livewire.manage-customer', ['customers' => $customers]);
-    }
+{
+    return view('livewire.manage-customer', [
+        'customers' => User::where('role', 'user')->paginate(10),
+    ]);
+}
 
     public function save()
     {
@@ -70,14 +78,14 @@ class ManageCustomer extends Component
         $this->password = ''; // Leave empty unless changed
     }
 
-    public function delete($id)
-    {
-        $user = User::find($id);
-        $user->delete();
+    // public function delete($id)
+    // {
+    //     $user = User::find($id);
+    //     $user->delete();
 
-        session()->flash('message', 'Customer deleted successfully.');
-        $this->dispatch('customerSaved', message: 'Customer deleted successfully.');
-    }
+    //     session()->flash('message', 'Customer deleted successfully.');
+    //     $this->dispatch('customerSaved', message: 'Customer deleted successfully.');
+    // }
 
     public function resetInput()
     {
@@ -88,5 +96,12 @@ class ManageCustomer extends Component
         $this->customerId = null;
     }
 
-    protected $listeners = ['delete' => 'delete'];
-}
+
+     #[On('delete')]
+    public function delete($id){
+        $user = User::find($id);
+        $user->delete();
+        session()->flash('message', 'User Deleted Successfully.');
+        $this->dispatch('userSaved', message:'User Deleted Successfully.');
+    }
+

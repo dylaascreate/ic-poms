@@ -12,6 +12,7 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Auth\UserDashboard as UserDashboard;
 use App\Livewire\ManageProduct;
 use App\Livewire\ManageCustomer;
+use App\Livewire\ManageStaff;
 
 
 // Main route
@@ -54,8 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('product', ProductIndex::class)->name('product');
     Route::get('manage-product', ManageProduct::class)->name('manage-product');
 
-    // CUSTOMERS
+    // USER
     Route::get('manage-customer', ManageCustomer::class)->name('manage-customer');
+    Route::get('manage-staff', ManageStaff::class)->name('manage-staff');
 
     // ORDERS
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');

@@ -13,11 +13,9 @@ class ManageProduct extends Component
     use WithFileUploads;
 
     public $image, $name, $description, $price, $productId; // public properties for input fields
-
-
     protected $rules = [
         'name' => 'required|string',
-        'description' => 'required|string',
+        'description' => 'string',
         'price' => 'required|numeric|min:0',
         'image' => 'nullable|image|max:2048',
     ];// validation rules (error-handling)
@@ -33,6 +31,7 @@ class ManageProduct extends Component
 
     public function save(){
         $this->validate(); // validate input
+
         $input['name'] = $this->name;
         $input['description'] = $this->description;
         $input['price'] = $this->price;
@@ -41,11 +40,11 @@ class ManageProduct extends Component
         if ($this->image) {
             $input['image'] = $this->image->store('products', 'public');
         }
-
+        // If productId is set, we are updating an existing product
         if($this->productId){
             $product = Product::find($this->productId);
 
-            // If new image uploaded, delete old one (optional)
+            // If new image uploaded, delete old one
             if (isset($input['image']) && $product->image) {
                 Storage::disk('public')->delete($product->image);
             }
@@ -54,7 +53,7 @@ class ManageProduct extends Component
             // session()->flash('message', 'Product Updated Successfully.');
             // $this->dispatch('productSaved'); // dispatch event to notify parent component
             $this->dispatch('productSaved', message:'Product Updated Successfully.');
-            }else{
+        }else{
                 Product::create($input);
                 // session()->flash('message', 'Product Created Successfully.');
                 $this->dispatch('productSaved', message:'Product created successfully.');
@@ -64,6 +63,7 @@ class ManageProduct extends Component
 
     public function edit($id){
         $product = Product::find($id);
+        
         $this->name = $product->name;
         $this->description = $product->description;
         $this->price = $product->price;       

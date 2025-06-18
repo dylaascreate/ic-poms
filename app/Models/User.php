@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,9 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // Added role column
+        'role',        // 'user' or 'admin'
+        'position',    // 'customer', 'manager', etc.
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,7 +49,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's initials
+     * Get the user's initials.
      */
     public function initials(): string
     {
@@ -65,6 +64,9 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Role checks
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -75,5 +77,21 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
+    /**
+     * Position Constants
+     */
+    public const USER_DEFAULT_POSITION = 'customer';
 
+    public const ADMIN_POSITIONS = [
+        'superadmin',
+        'designer',
+        'manager',
+        'marketing',
+        'production staff',
+    ];
+
+    public const ALL_POSITIONS = [
+        self::USER_DEFAULT_POSITION,
+        ...self::ADMIN_POSITIONS,
+    ];
 }

@@ -9,6 +9,7 @@ use App\Models\OrderStatusHistory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 
 class ManageOrder extends Component
 {
@@ -22,7 +23,7 @@ class ManageOrder extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'no_order' => 'required|string|max:20|unique:orders,no_order,',
+        'no_order' => 'required|string|max:20',
         'description' => 'required|string',
         'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
         'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
@@ -33,14 +34,16 @@ class ManageOrder extends Component
         'selectedProducts.*.price' => 'required|numeric|min:0',
     ];
 
-    protected $listeners = ['delete' => 'delete'];
+    public $isProduction = false;
 
     public function mount()
     {
         $this->status = 'waiting';
         $this->productList = Product::all();
+        $this->isProduction = Auth::user()->position === 'Production Staff'; // Adjust field name if needed
         $this->selectedProducts = [];
     }
+
 
     public function render()
     {
@@ -54,28 +57,51 @@ class ManageOrder extends Component
         ]);
     }
 
-public function save()
-{
-    $this->validate([
-        'no_order' => 'required|string|max:20|unique:orders,no_order,' . ($this->orderId ?? 'NULL') . ',id',
-        'description' => 'required|string',
-        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
-        'orderOwnerId' => 'required|exists:users,id',
-        'selectedProducts' => 'required|array|min:1',
-        'selectedProducts.*.product_id' => 'required|exists:products,id',
-        'selectedProducts.*.quantity' => 'required|integer|min:1',
-        'selectedProducts.*.price' => 'required|numeric|min:0',
-    ]);
+    // SAVE method
+    public function save()
+    {
+        // Check if the user is a production staff
+        $isProduction = Auth::user()->position === 'Production Staff'; // Adjust if role field differs
 
-    $this->price = 0;
-    $productData = [];
-    foreach ($this->selectedProducts as $product) {
-        $this->price += $product['quantity'] * $product['price'];
-        $productData[$product['product_id']] = [
-            'quantity' => $product['quantity'],
-            'price' => $product['price'],
-        ];
-    }
+        if ($isProduction && $this->orderId) {
+            // Only allow status update
+            $order = Order::findOrFail($this->orderId);
+
+            if ($order->status !== $this->status) {
+                $order->update(['status' => $this->status]);
+
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => $this->status,
+                ]);
+
+                $this->dispatch('orderSaved', message: 'Order status updated successfully.');
+            } else {
+                $this->dispatch('orderSaved', message: 'No changes to status.');
+            }
+
+            return;
+        }
+
+        // Validate as usual for non-production staff
+        $this->validate();
+
+        $ownerId = $this->orderOwnerId ?? Auth::id();
+        $this->price = 0;
+        $productData = [];
+
+        foreach ($this->selectedProducts as $product) {
+            $this->price += $product['quantity'] * $product['price'];
+            $productData[$product['product_id']] = [
+                'quantity' => $product['quantity'],
+                'price' => $product['price'],
+            ];
+        }
+
+        if (empty($this->no_order)) {
+            $this->dispatch('orderError', message: 'Order number cannot be empty.');
+            return;
+        }
 
     if ($this->orderId) {
         // Update existing order by ID
@@ -93,9 +119,28 @@ public function save()
             'no_order' => $this->no_order,
             'description' => $this->description,
             'status' => $this->status,
-            'user_id' => $this->orderOwnerId,
-            'price' => $this->price,
-        ]);
+            'user_id' => $ownerId,
+        ];
+
+        if ($this->orderId) {
+            $order = Order::findOrFail($this->orderId);
+            $order->update($data);
+        } else {
+            $order = Order::create($data);
+        }
+
+        $order->products()->sync($productData);
+
+        $lastStatus = $order->latestStatus?->status ?? null;
+        if ($lastStatus !== $this->status) {
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'status' => $this->status,
+            ]);
+        }
+
+        $this->dispatch('orderSaved', message: 'Order saved successfully.');
+        $this->resetInput();
     }
 
     // Sync products
@@ -104,6 +149,7 @@ public function save()
     $this->showForm = false;
     $this->dispatch('orderSaved', message: 'Order saved successfully!');
 }
+
 
     public function edit($id)
     {
@@ -128,11 +174,11 @@ public function save()
         $this->showForm = true;
     }
 
-    public function delete($id)
-    {
-        Order::findOrFail($id)->delete();
-        $this->dispatch('orderSaved', message: 'Order deleted successfully.');
-    }
+    // public function delete($id)
+    // {
+    //     Order::findOrFail($id)->delete();
+    //     $this->dispatch('orderSaved', message: 'Order deleted successfully.');
+    // }
 
     public function resetInput()
     {
@@ -160,6 +206,17 @@ public function save()
         $this->selectedProducts = array_values($this->selectedProducts);
         $this->calculateTotal();
     }
+
+
+    public function updatedSelectedProducts($value, $key)
+    {
+        if (str_ends_with($key, 'product_id')) {
+            [$index,] = explode('.', $key);
+            $product = Product::find($value);
+            if ($product) {
+                $this->selectedProducts[$index]['price'] = $product->price;
+            }
+        }
 
     public function updatedSelectedProducts($value, $name)
     {
@@ -195,14 +252,21 @@ public function save()
         return Order::where('status', 'waiting')->count();
     }
 
-    public function showAddForm()
-    {
-        $this->resetInput(); // Optional: clear form fields
-        $this->showForm = true;
-    }
+    #[On('delete')]
+    public function delete($id){
+        $order = Order::find($id);
+        $order->delete();
+        session()->flash('message', 'Order Deleted Successfully.');
+        $this->dispatch('orderSaved', message:'Order Deleted Successfully.');
 
-    public function hideForm()
-    {
-        $this->showForm = false;
-    }
+//     public function showAddForm()
+//     {
+//         $this->resetInput(); // Optional: clear form fields
+//         $this->showForm = true;
+//     }
+
+//     public function hideForm()
+//     {
+//         $this->showForm = false;
+//     }
 }
