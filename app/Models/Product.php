@@ -13,7 +13,8 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image', // assuming you added this field
+        'image',
+        'category',
     ];
 
     // A product belongs to many orders

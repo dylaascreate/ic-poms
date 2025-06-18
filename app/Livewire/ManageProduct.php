@@ -12,13 +12,16 @@ class ManageProduct extends Component
 {
     use WithFileUploads;
 
-    public $image, $name, $description, $price, $productId; // public properties for input fields
+    public $image, $name, $description, $price, $category, $productId;
+
     protected $rules = [
         'name' => 'required|string',
-        'description' => 'string',
+        'description' => 'nullable|string',
         'price' => 'required|numeric|min:0',
+        'category' => 'required|string',
         'image' => 'nullable|image|max:2048',
-    ];// validation rules (error-handling)
+    ];
+
     
     public function render()
     {
@@ -35,6 +38,7 @@ class ManageProduct extends Component
         $input['name'] = $this->name;
         $input['description'] = $this->description;
         $input['price'] = $this->price;
+        $input['category'] = $this->category;
 
         // Handle image upload if provided
         if ($this->image) {
@@ -67,6 +71,7 @@ class ManageProduct extends Component
         $this->name = $product->name;
         $this->description = $product->description;
         $this->price = $product->price;       
+        $this->category = $product->category;
         $this->image = $product->image;
 
         // $productId = $product->id; // get product id
