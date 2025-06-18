@@ -17,6 +17,8 @@ class Product extends Model
         'category',
     ];
 
+    public $timestamps = false;
+
     // A product belongs to many orders
     public function orders()
     {

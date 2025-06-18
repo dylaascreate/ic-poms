@@ -25,6 +25,7 @@
         <tr>
             <th class="py-3 px-4 text-center">ID</th>
             <th class="py-3 px-4">Image</th>
+            <th class="py-3 px-4 text-center">Category</th>
             <th class="py-3 px-4">Name</th>
             <th class="py-3 px-4">Description</th>
             <th class="py-3 px-4 text-center">Price</th>
@@ -42,6 +43,7 @@
                     <span class="text-gray-400 italic">No Image</span>
                 @endif
             </td>
+            <td class="py-3 px-4 text-center text-sm text-gray-800">{{ $pt->category }}</td>
             <td class="py-3 px-4 font-semibold text-gray-800">{{ $pt->name }}</td>
             <td class="py-3 px-4 text-gray-700">{{ $pt->description }}</td>
             <td class="py-3 px-4 text-center font-medium text-green-700">RM {{ number_format($pt->price, 2) }}</td>
@@ -104,6 +106,24 @@
                                 @endif
                             @endif
                         </div>
+
+                        {{-- Category --}}
+                        <flux:select wire:model="category" label="Category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="Business Card">Business Card</option>
+                            <option value="Flyer">Flyer</option>
+                            <option value="Poster">Poster</option>
+                            <option value="Sticker">Sticker</option>
+                            <option value="Brochure">Brochure</option>
+                            <option value="Banner">Banner</option>
+                            <option value="T-Shirt Printing">T-Shirt Printing</option>
+                            <option value="Mug Printing">Mug Printing</option>
+                        </flux:select>
+
+                        @error('category')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+
 
                         {{-- Name --}}
                         <flux:input wire:model="name" label="Product Name" placeholder="Product Name"/>
