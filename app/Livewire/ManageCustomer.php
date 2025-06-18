@@ -96,7 +96,6 @@ class ManageCustomer extends Component
         $this->customerId = null;
     }
 
-
      #[On('delete')]
     public function delete($id){
         $user = User::find($id);
@@ -104,4 +103,4 @@ class ManageCustomer extends Component
         session()->flash('message', 'User Deleted Successfully.');
         $this->dispatch('userSaved', message:'User Deleted Successfully.');
     }
-
+}
