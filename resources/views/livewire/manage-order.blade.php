@@ -27,15 +27,6 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
                         <thead>
-                             <div class="flex justify-end mb-4">
-        <button 
-            type="button" 
-            wire:click="showAddForm" 
-            class="px-4 py-2 bg-green-600 text-black rounded-md text-sm font-semibold shadow"
-        >
-            + Add Order
-        </button>
-    </div>
                             <tr class="bg-teal-500 text-white text-sm uppercase">
                                 <th class="p-2">No Order</th>
                                 <th class="p-2">Description</th>
@@ -57,8 +48,8 @@
                                 <td class="p-2 align-top">{{ $order->description }}</td>
                                 <td class="p-2 align-top">{{ $order->price }}</td>
                                 <td class="p-2 align-top">{{ $order->user?->name ?? 'N/A' }}</td>
-                                <td class="p-2 align-top whitespace-nowrap min-w-[110px]">
-                                    <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold whitespace-nowrap
+                                <td class="p-2 align-top">
+                                    <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold
                                         @switch($order->status)
                                             @case('waiting') bg-gray-400 @break
                                             @case('printing') bg-green-500 @break
@@ -77,7 +68,6 @@
                                         @endforeach
                                     </ul>
                                 </td>
-
                                 {{-- <td class="p-2 align-top space-x-2">
                                     <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
                                     <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
@@ -106,7 +96,6 @@
 
     {{-- ORDER FORM --}}
     <br>
-
     <div class="flex flex-col gap-6">
         <div class="rounded-xl border shadow-sm">
             <br>
@@ -157,64 +146,29 @@
                                         <option value="">-- Choose Product --</option>
                                         @foreach($products as $p)
                                             <option value="{{ $p->id }}">{{ $p->name }}</option>
-
                                         @endforeach
-                                    </flux:select>
-                                    <flux:select wire:model.defer="status" label="Status" required>
-                                        <option value="waiting">Waiting</option>
-                                        <option value="printing">Printing</option>
-                                        <option value="can_pick_up">Can Pick Up</option>
-                                        <option value="picked_up">Picked Up</option>
-                                    </flux:select>
+                                    </select>
                                 </div>
-                                <div class="mt-2">
-                                    <label class="block font-bold text-sm text-gray-700 mb-2">Select Products</label>
-                                    @foreach ($selectedProducts as $index => $product)
-                                        <div class="border p-3 rounded-xl mb-2">
-                                            <div class="mb-2">
-                                                <select 
-                                                    wire:model="selectedProducts.{{ $index }}.product_id"
-                                                    class="border rounded-md p-2 w-full text-sm"
-                                                >
-                                                    <option value="">-- Choose Product --</option>
-                                                    @foreach($products as $p)
-                                                        <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            @if(!empty($product['product_id']))
-                                                <div class="flex items-center gap-2">
-                                                    Quantity
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Qty"
-                                                        wire:model="selectedProducts.{{ $index }}.quantity"
-                                                        class="border rounded-md p-2 w-1/3 text-sm"
-                                                        min="0"
-                                                        aria-label="Quantity"
-                                                        @if(empty($product['product_id'])) disabled @endif
-                                                    />
-                                                    Price
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Price"
-                                                        wire:model="selectedProducts.{{ $index }}.price"
-                                                        class="border rounded-md p-2 w-1/3 text-sm"
-                                                        step="0.01"
-                                                        min="0"
-                                                        aria-label="Price"
-                                                        @if(empty($product['product_id'])) disabled @endif
-                                                    />
-                                                </div>
-                                            @endif
-                                            <button type="button" wire:click="removeProduct({{ $index }})" class="text-red-500 text-xs mt-2">Remove</button>
-                                        </div>
-                                    @endforeach
-                                    <button type="button" wire:click="addProduct" class="mt-2 px-3 py-1 bg-sky-500 text-white rounded-md text-xs">
-                                        Add Another Product
-                                    </button>
-                                    <div class="mt-2">
-                                        <flux:input wire:model="price" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
+
+                                @if(!empty($product['product_id']))
+                                    <div class="flex items-center gap-2">
+                                        <input
+                                            type="number"
+                                            placeholder="Qty"
+                                            wire:model.defer="selectedProducts.{{ $index }}.quantity"
+                                            class="border rounded-md p-2 w-1/3 text-sm"
+                                            min="0"
+                                            aria-label="Quantity"
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Price"
+                                            wire:model.defer="selectedProducts.{{ $index }}.price"
+                                            class="border rounded-md p-2 w-1/3 text-sm"
+                                            step="0.01"
+                                            min="0"
+                                            aria-label="Price"
+                                        />
                                     </div>
                                 @endif
 
@@ -235,7 +189,7 @@
                 </form>
             </div>
         </div>
-    @endif
+    </div>
 
     {{-- SWEETALERT SCRIPT --}}
     <script>
@@ -255,12 +209,11 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Livewire.emit('delete', id);
                         Livewire.dispatch('delete', { id: id });
                     }
                 });
             });
         });
     </script>
-
-   
 </div>
