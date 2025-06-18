@@ -17,10 +17,21 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(3, true),
+            'name' => $this->faker->words(3, true),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 1, 100),
-            'image' => $this->faker->imageUrl(640, 480, 'technics', true), // Random image URL for the product
+            'image' => $this->faker->imageUrl(640, 480, 'business', true),
+            'category' => $this->faker->randomElement([
+                'Business Card',
+                'Flyer',
+                'Poster',
+                'Sticker',
+                'Brochure',
+                'Banner',
+                'T-Shirt Printing',
+                'Mug Printing',
+            ]),
         ];
     }
+
 }

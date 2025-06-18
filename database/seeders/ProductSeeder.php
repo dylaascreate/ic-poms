@@ -11,9 +11,27 @@ class ProductSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    // public function run(): void
+    // {
+    //     Product::factory()->count(5)->create();
+        
+    // }
+
     public function run(): void
     {
-        Product::factory()->count(5)->create();
-        
+        $categories = [
+            'Business Card',
+            'Flyer',
+            'Poster',
+            'Sticker',
+            'Brochure',
+        ];
+
+        foreach ($categories as $category) {
+            Product::factory()->count(2)->create([
+                'category' => $category,
+            ]);
+        }
     }
+
 }
