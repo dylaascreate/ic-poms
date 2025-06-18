@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Models\OrderStatusHistory;
 use App\Models\Product;
+use App\Models\OrderStatusHistory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +15,10 @@ class ManageOrder extends Component
 {
     use WithPagination;
 
-    public $no_order, $description, $status, $orderId, $orderOwnerId, $price;
-    public $selectedProducts = []; // [product_id => ['quantity' => x, 'price' => y]]
+    public $no_order, $description, $status, $orderId, $orderOwnerId, $price = 0;
+    public $selectedProducts = [];
     public $productList = [];
+    public $showForm = false;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -25,6 +26,8 @@ class ManageOrder extends Component
         'no_order' => 'required|string|max:20',
         'description' => 'required|string',
         'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
+        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
+        'orderOwnerId' => 'required|exists:users,id',
         'selectedProducts' => 'required|array|min:1',
         'selectedProducts.*.product_id' => 'required|exists:products,id',
         'selectedProducts.*.quantity' => 'required|integer|min:1',
@@ -38,6 +41,7 @@ class ManageOrder extends Component
         $this->status = 'waiting';
         $this->productList = Product::all();
         $this->isProduction = Auth::user()->position === 'Production Staff'; // Adjust field name if needed
+        $this->selectedProducts = [];
     }
 
 
@@ -45,7 +49,9 @@ class ManageOrder extends Component
     {
         $data['orders'] = Order::get(); // Get all orders
         return view('livewire.manage-order', [
-            'orders' => Order::with(['user', 'products', 'latestStatus'])->paginate(10),
+            'orders' => Order::with(['user', 'products', 'latestStatus'])
+                ->orderByDesc('updated_at') // <-- This makes the latest updated/created order first
+                ->paginate(10),
             'orderOwners' => User::all(),
             'products' => $this->productList,
         ]);
@@ -97,10 +103,21 @@ class ManageOrder extends Component
             return;
         }
 
-        $data = [
+    if ($this->orderId) {
+        // Update existing order by ID
+        $order = Order::findOrFail($this->orderId);
+        $order->update([
             'no_order' => $this->no_order,
             'description' => $this->description,
+            'status' => $this->status,
+            'user_id' => $this->orderOwnerId,
             'price' => $this->price,
+        ]);
+    } else {
+        // Create new order
+        $order = Order::create([
+            'no_order' => $this->no_order,
+            'description' => $this->description,
             'status' => $this->status,
             'user_id' => $ownerId,
         ];
@@ -126,7 +143,12 @@ class ManageOrder extends Component
         $this->resetInput();
     }
 
+    // Sync products
+    $order->products()->sync($productData);
 
+    $this->showForm = false;
+    $this->dispatch('orderSaved', message: 'Order saved successfully!');
+}
 
 
     public function edit($id)
@@ -136,12 +158,11 @@ class ManageOrder extends Component
         $this->orderId = $order->id;
         $this->no_order = $order->no_order;
         $this->description = $order->description;
-        $this->price = $order->price;
         $this->status = $order->status;
         $this->orderOwnerId = $order->user_id;
+        $this->price = $order->price;
 
         $this->selectedProducts = [];
-
         foreach ($order->products as $product) {
             $this->selectedProducts[] = [
                 'product_id' => $product->id,
@@ -149,8 +170,9 @@ class ManageOrder extends Component
                 'price' => $product->pivot->price,
             ];
         }
-    }
 
+        $this->showForm = true;
+    }
 
     // public function delete($id)
     // {
@@ -162,7 +184,7 @@ class ManageOrder extends Component
     {
         $this->orderId = null;
         $this->no_order = '';
-        $this->description = '';
+        $this->description = ''; // Use order_desc
         $this->price = 0;
         $this->status = 'waiting';
         $this->orderOwnerId = null;
@@ -182,7 +204,9 @@ class ManageOrder extends Component
     {
         unset($this->selectedProducts[$index]);
         $this->selectedProducts = array_values($this->selectedProducts);
+        $this->calculateTotal();
     }
+
 
     public function updatedSelectedProducts($value, $key)
     {
@@ -194,20 +218,39 @@ class ManageOrder extends Component
             }
         }
 
-        $this->price = 0;
-        foreach ($this->selectedProducts as $product) {
-            if (isset($product['quantity'], $product['price'])) {
-                $this->price += $product['quantity'] * $product['price'];
+    public function updatedSelectedProducts($value, $name)
+    {
+        // $name example: "1.product_id"
+        $parts = explode('.', $name);
+        if (count($parts) === 2 && $parts[1] === 'product_id') {
+            $index = $parts[0];
+            $productId = $value;
+            if ($productId) {
+                $product = \App\Models\Product::find($productId);
+                if ($product) {
+                    $this->selectedProducts[$index]['quantity'] = 1;
+                    $this->selectedProducts[$index]['price'] = $product->price ?? 0;
+                }
+            } else {
+                $this->selectedProducts[$index]['quantity'] = 1;
+                $this->selectedProducts[$index]['price'] = 0;
             }
         }
+        $this->calculateTotal();
     }
 
+    public function calculateTotal()
+    {
+        $this->price = collect($this->selectedProducts)
+            ->sum(function ($item) {
+                return (float)($item['quantity'] ?? 0) * (float)($item['price'] ?? 0);
+            });
+    }
 
     public function countWaitingOrderCount()
-{
-    return Order::where('status', 'waiting')->count();
-}
-
+    {
+        return Order::where('status', 'waiting')->count();
+    }
 
     #[On('delete')]
     public function delete($id){
@@ -215,6 +258,15 @@ class ManageOrder extends Component
         $order->delete();
         session()->flash('message', 'Order Deleted Successfully.');
         $this->dispatch('orderSaved', message:'Order Deleted Successfully.');
-    }
 
+//     public function showAddForm()
+//     {
+//         $this->resetInput(); // Optional: clear form fields
+//         $this->showForm = true;
+//     }
+
+//     public function hideForm()
+//     {
+//         $this->showForm = false;
+//     }
 }

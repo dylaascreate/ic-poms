@@ -9,6 +9,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Auth\UserDashboard as UserDashboard;
 use App\Livewire\ManageProduct;
 use App\Livewire\ManageCustomer;
 use App\Livewire\ManageStaff;
@@ -27,13 +28,17 @@ Route::get('dashboard', function () {
     }
 
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('views.dashboard');
 
 // Admin-only route
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', AdminDashboard::class)
     ->name('dashboard');
 });
+
+//user dashboard route
+Route::middleware(['auth', 'verified'])
+->get('/dashboard', UserDashboard::class)->name('dashboard');
 
 
 Route::middleware(['auth'])->group(function () { 
@@ -62,3 +67,11 @@ Route::middleware(['auth'])->group(function () {
    Route::get('/order/{productId}', OrderUser::class)->name('order.form');
 
 require __DIR__.'/auth.php';
+
+
+// User dashboard route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/dashboard', \App\Livewire\Auth\UserDashboard::class)->name('user.dashboard');
+});
+
+
