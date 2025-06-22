@@ -1,6 +1,5 @@
 <?php
 
-use App\Livewire\AboutPage;
 use App\Livewire\ProductIndex;
 use App\Livewire\OrderUser;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +10,13 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\ManageProduct;
 use App\Livewire\ManageCustomer;
-
+use App\Livewire\Auth\Login;
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
-Route::get('/about', AboutPage::class)->name('about');
+
+// Login route 
+Route::get('/login', Login::class)->name('login');
 
 // Common dashboard route
 Route::get('dashboard', function () {
@@ -30,15 +31,11 @@ Route::get('dashboard', function () {
 
 // Admin-only route
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('dashboard', AdminDashboard::class)
-    ->name('dashboard');
+    Route::get('dashboard', AdminDashboard::class)->name('dashboard');
 });
 
-
+// Authenticated routes
 Route::middleware(['auth'])->group(function () { 
-    // middleware for authenticated users
-    // group all routes that require authentication
-    
     // SETTINGS
     Route::redirect('settings', 'settings/profile');
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -56,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
 });
 
-   //ORDER
-   Route::get('/order/{productId}', OrderUser::class)->name('order.form');
+// ORDER (public route)
+Route::get('/order/{productId}', OrderUser::class)->name('order.form');
 
 require __DIR__.'/auth.php';
