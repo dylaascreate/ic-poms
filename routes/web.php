@@ -16,6 +16,7 @@ use App\Livewire\ManageCustomer;
 use App\Livewire\Auth\Login;
 use App\Livewire\ManageStaff;
 
+use App\Livewire\Auth\Login;
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
@@ -27,7 +28,7 @@ Route::get('/login', Login::class)->name('login');
 Route::get('dashboard', function () {
     $user = Auth::user();
 
-    if ($user->role === 'admin') {
+    if ($user && $user->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
 
@@ -65,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
 
 // ORDER (public route)
 Route::get('/order/{productId}', OrderUser::class)->name('order.form');
+
 
 require __DIR__.'/auth.php';
 

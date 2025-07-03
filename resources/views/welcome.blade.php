@@ -94,7 +94,7 @@
             .product-card {
                 flex: 0 0 calc(25% - 15px);
             }
-        }
+ }
         /*Hero Carousel Styles*/
         .hero-carousel {
             position: relative;
@@ -122,6 +122,7 @@
         border-bottom: 3px solid #de1e2e;
         transition: transform 0.3s ease;
         }
+
         .floating-card:hover {
             transform: translateY(-5px);
         }
@@ -143,6 +144,7 @@
                         Login / Sign Up
                     </a>
                 @endauth
+
 
                 <!-- Track Order Button -->
                 <button 
@@ -243,6 +245,7 @@
         <div x-show="error" class="mt-4 text-red-600" x-text="error"></div>
     </div>
 </div>
+
         <!-- Hero Section -->
         <div class="relative bg-gray-100 h-80 md:h-96 flex flex-col justify-center items-center text-center px-4 overflow-hidden">
             <!-- Carousel Container -->
