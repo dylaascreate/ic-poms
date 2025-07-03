@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Models\OrderStatusHistory;
 use App\Models\Product;
+use App\Models\OrderStatusHistory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
@@ -15,50 +15,48 @@ class ManageOrder extends Component
 {
     use WithPagination;
 
-    public $no_order, $description, $status, $orderId, $orderOwnerId, $price;
-    public $selectedProducts = []; // [product_id => ['quantity' => x, 'price' => y]]
+    public $no_order, $description, $status = 'waiting', $orderId, $orderOwnerId, $price = 0;
+    public $selectedProducts = [];
     public $productList = [];
+    public $isProduction = false;
 
     protected $paginationTheme = 'bootstrap';
 
-    protected $rules = [
-        'no_order' => 'required|string|max:20',
-        'description' => 'required|string',
-        'status' => 'required|string|in:waiting,printing,can_pick_up,picked_up',
-        'selectedProducts' => 'required|array|min:1',
-        'selectedProducts.*.product_id' => 'required|exists:products,id',
-        'selectedProducts.*.quantity' => 'required|integer|min:1',
-        'selectedProducts.*.price' => 'required|numeric|min:0',
-    ];
-
-    public $isProduction = false;
+    protected function rules()
+    {
+        return [
+            'no_order' => 'required|string|max:20|unique:orders,no_order,' . $this->orderId,
+            'description' => 'required|string',
+            'status' => 'required|in:waiting,printing,can_pick_up,picked_up',
+            'orderOwnerId' => 'required|exists:users,id',
+            'selectedProducts' => 'required|array|min:1',
+            'selectedProducts.*.product_id' => 'required|exists:products,id',
+            'selectedProducts.*.quantity' => 'required|integer|min:1',
+            'selectedProducts.*.price' => 'required|numeric|min:0',
+        ];
+    }
 
     public function mount()
     {
-        $this->status = 'waiting';
         $this->productList = Product::all();
-        $this->isProduction = Auth::user()->position === 'Production Staff'; // Adjust field name if needed
+        $this->isProduction = Auth::user()?->position === 'Production Staff';
     }
-
 
     public function render()
     {
-        $data['orders'] = Order::get(); // Get all orders
         return view('livewire.manage-order', [
-            'orders' => Order::with(['user', 'products', 'latestStatus'])->paginate(10),
-            'orderOwners' => User::all(),
+            'orders' => Order::with(['user', 'products', 'latestStatus'])->latest()->paginate(10),
+            'orderOwners' => User::where('role', 'user')->get(),
             'products' => $this->productList,
         ]);
     }
 
-    // SAVE method
     public function save()
     {
-        // Check if the user is a production staff
-        $isProduction = Auth::user()->position === 'Production Staff'; // Adjust if role field differs
+        $user = Auth::user();
 
-        if ($isProduction && $this->orderId) {
-            // Only allow status update
+        // Production staff can only update status
+        if ($this->isProduction && $this->orderId) {
             $order = Order::findOrFail($this->orderId);
 
             if ($order->status !== $this->status) {
@@ -69,20 +67,19 @@ class ManageOrder extends Component
                     'status' => $this->status,
                 ]);
 
-                $this->dispatch('orderSaved', message: 'Order status updated successfully.');
+                $this->dispatch('orderSaved', ['message' => 'Order status updated successfully.']);
             } else {
-                $this->dispatch('orderSaved', message: 'No changes to status.');
+                $this->dispatch('orderSaved', ['message' => 'No changes made.']);
             }
-
             return;
         }
 
-        // Validate as usual for non-production staff
+        // Validation for others
         $this->validate();
 
-        $ownerId = $this->orderOwnerId ?? Auth::id();
-        $this->price = 0;
+        $ownerId = $this->orderOwnerId ?? $user->id;
         $productData = [];
+        $this->price = 0;
 
         foreach ($this->selectedProducts as $product) {
             $this->price += $product['quantity'] * $product['price'];
@@ -92,42 +89,29 @@ class ManageOrder extends Component
             ];
         }
 
-        if (empty($this->no_order)) {
-            $this->dispatch('orderError', message: 'Order number cannot be empty.');
-            return;
-        }
-
         $data = [
             'no_order' => $this->no_order,
             'description' => $this->description,
-            'price' => $this->price,
             'status' => $this->status,
             'user_id' => $ownerId,
+            'price' => $this->price,
         ];
 
-        if ($this->orderId) {
-            $order = Order::findOrFail($this->orderId);
-            $order->update($data);
-        } else {
-            $order = Order::create($data);
-        }
-
+        $order = $this->orderId ? Order::findOrFail($this->orderId) : new Order();
+        $order->fill($data)->save();
         $order->products()->sync($productData);
 
-        $lastStatus = $order->latestStatus?->status ?? null;
-        if ($lastStatus !== $this->status) {
+        if ($order->latestStatus?->status !== $this->status) {
             OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $this->status,
             ]);
         }
 
-        $this->dispatch('orderSaved', message: 'Order saved successfully.');
+        $msg = $this->orderId ? 'Order updated successfully.' : 'Order created successfully.';
+        $this->dispatch('orderSaved', ['message' => $msg]);
         $this->resetInput();
     }
-
-
-
 
     public function edit($id)
     {
@@ -136,37 +120,40 @@ class ManageOrder extends Component
         $this->orderId = $order->id;
         $this->no_order = $order->no_order;
         $this->description = $order->description;
-        $this->price = $order->price;
         $this->status = $order->status;
+        $this->price = $order->price;
         $this->orderOwnerId = $order->user_id;
 
-        $this->selectedProducts = [];
-
-        foreach ($order->products as $product) {
-            $this->selectedProducts[] = [
+        $this->selectedProducts = $order->products->map(function ($product) {
+            return [
                 'product_id' => $product->id,
                 'quantity' => $product->pivot->quantity,
                 'price' => $product->pivot->price,
             ];
-        }
+        })->toArray();
     }
 
-
-    // public function delete($id)
-    // {
-    //     Order::findOrFail($id)->delete();
-    //     $this->dispatch('orderSaved', message: 'Order deleted successfully.');
-    // }
+    #[On('delete')]
+    public function delete($id)
+    {
+        $order = Order::find($id);
+        if ($order) {
+            $order->delete();
+            $this->dispatch('orderSaved', ['message' => 'Order deleted successfully.']);
+        } else {
+            $this->dispatch('orderError', ['message' => 'Order not found.']);
+        }
+    }
 
     public function resetInput()
     {
         $this->orderId = null;
         $this->no_order = '';
         $this->description = '';
-        $this->price = 0;
         $this->status = 'waiting';
         $this->orderOwnerId = null;
         $this->selectedProducts = [];
+        $this->price = 0;
     }
 
     public function addProduct()
@@ -182,18 +169,23 @@ class ManageOrder extends Component
     {
         unset($this->selectedProducts[$index]);
         $this->selectedProducts = array_values($this->selectedProducts);
+        $this->recalculateTotal();
     }
 
     public function updatedSelectedProducts($value, $key)
     {
         if (str_ends_with($key, 'product_id')) {
-            [$index,] = explode('.', $key);
+            [$index, ] = explode('.', $key);
             $product = Product::find($value);
             if ($product) {
                 $this->selectedProducts[$index]['price'] = $product->price;
             }
         }
+        $this->recalculateTotal();
+    }
 
+    private function recalculateTotal()
+    {
         $this->price = 0;
         foreach ($this->selectedProducts as $product) {
             if (isset($product['quantity'], $product['price'])) {
@@ -202,19 +194,8 @@ class ManageOrder extends Component
         }
     }
 
-
     public function countWaitingOrderCount()
-{
-    return Order::where('status', 'waiting')->count();
-}
-
-
-    #[On('delete')]
-    public function delete($id){
-        $order = Order::find($id);
-        $order->delete();
-        session()->flash('message', 'Order Deleted Successfully.');
-        $this->dispatch('orderSaved', message:'Order Deleted Successfully.');
+    {
+        return Order::where('status', 'waiting')->count();
     }
-
 }

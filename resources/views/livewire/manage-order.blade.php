@@ -14,89 +14,91 @@
         $canEditStatusOnly = $isAdmin && $user->position === 'Production Staff';
     @endphp
 
-
-    {{-- ORDER TABLE --}}
-    <div class="flex flex-col gap-6">
-        <flux:heading class="px-10 flex items-center gap-2" size="xl">
+    {{-- ORDER TABLE + ADD BUTTON --}}
+    <div class="px-10 flex items-center justify-between mb-4">
+        <flux:heading size="xl" class="flex items-center gap-2">
             All Orders
             <flux:badge variant="primary">{{ $orders->total() }}</flux:badge>
         </flux:heading>
 
-        <div class="rounded-xl border shadow-sm bg-white">
-            <div class="px-10 py-8">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="bg-teal-500 text-white text-sm uppercase">
-                                <th class="p-2">No Order</th>
-                                <th class="p-2">Description</th>
-                                <th class="p-2">Price (RM)</th>
-                                <th class="p-2">User</th>
-                                <th class="p-2">Status</th>
-                                <th class="p-2">Products</th>
-                                <th class="p-2">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($orders as $order)
-                            <tr wire:key="order-{{ $order->id }}" @class([
-                                'hover:bg-teal-300 transition duration-200 border-b',
-                                'bg-teal-200' => $loop->even,
-                                'bg-white' => !$loop->even,
-                            ])>
-                                <td class="p-2 align-top">{{ $order->no_order }}</td>
-                                <td class="p-2 align-top">{{ $order->description }}</td>
-                                <td class="p-2 align-top">{{ $order->price }}</td>
-                                <td class="p-2 align-top">{{ $order->user?->name ?? 'N/A' }}</td>
-                                <td class="p-2 align-top">
-                                    <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold
-                                        @switch($order->status)
-                                            @case('waiting') bg-gray-400 @break
-                                            @case('printing') bg-green-500 @break
-                                            @case('can_pick_up') bg-orange-500 @break
-                                            @case('picked_up') bg-purple-500 @break
-                                            @default bg-gray-300
-                                        @endswitch
-                                    ">
-                                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
-                                    </span>
-                                </td>
-                                <td class="p-2 align-top">
-                                    <ul class="list-disc list-inside text-xs max-h-24 overflow-auto">
-                                        @foreach($order->products as $product)
-                                            <li>{{ $product->name }} (x{{ $product->pivot->quantity }})</li>
-                                        @endforeach
-                                    </ul>
-                                </td>
-                                {{-- <td class="p-2 align-top space-x-2">
+        <button
+            onclick="document.getElementById('order-form').scrollIntoView({ behavior: 'smooth' });"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+        >
+            + Add Order
+        </button>
+    </div>
+
+    {{-- ORDER TABLE --}}
+    <div class="rounded-xl border shadow-sm bg-white mx-10 mb-10">
+        <div class="px-10 py-8">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
+                    <thead>
+                        <tr class="bg-teal-500 text-white text-sm uppercase">
+                            <th class="p-2">No Order</th>
+                            <th class="p-2">Description</th>
+                            <th class="p-2">Price (RM)</th>
+                            <th class="p-2">User</th>
+                            <th class="p-2">Status</th>
+                            <th class="p-2">Products</th>
+                            <th class="p-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($orders as $order)
+                        <tr wire:key="order-{{ $order->id }}" @class([
+                            'hover:bg-teal-300 transition duration-200 border-b',
+                            'bg-teal-200' => $loop->even,
+                            'bg-white' => !$loop->even,
+                        ])>
+                            <td class="p-2 align-top">{{ $order->no_order }}</td>
+                            <td class="p-2 align-top">{{ $order->description }}</td>
+                            <td class="p-2 align-top">{{ $order->price }}</td>
+                            <td class="p-2 align-top">{{ $order->user?->name ?? 'N/A' }}</td>
+                            <td class="p-2 align-top">
+                                <span class="px-3 py-1 rounded-xl text-white text-xs font-semibold
+                                    @switch($order->status)
+                                        @case('waiting') bg-gray-400 @break
+                                        @case('printing') bg-green-500 @break
+                                        @case('can_pick_up') bg-orange-500 @break
+                                        @case('picked_up') bg-purple-500 @break
+                                        @default bg-gray-300
+                                    @endswitch
+                                ">
+                                    {{ ucwords(str_replace('_', ' ', $order->status)) }}
+                                </span>
+                            </td>
+                            <td class="p-2 align-top">
+                                <ul class="list-disc list-inside text-xs max-h-24 overflow-auto">
+                                    @foreach($order->products as $product)
+                                        <li>{{ $product->name }} (x{{ $product->pivot->quantity }})</li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td class="p-2 align-top space-x-2">
+                                @if($canManageAll || $canEditStatusOnly)
                                     <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
+                                @endif
+
+                                @if($canManageAll)
                                     <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
-                                </td> --}}
-                                <td class="p-2 align-top space-x-2">
-                                    @if($canManageAll || $canEditStatusOnly)
-                                        <flux:button wire:click="edit({{ $order->id }})" icon="pencil-square" variant="primary" class="bg-sky-500 text-white rounded-md text-sm" aria-label="Edit order {{ $order->no_order }}" />
-                                    @endif
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-                                    @if($canManageAll)
-                                        <flux:button wire:click="$dispatch('confirmDelete', {{ $order->id }})" icon="trash" variant="danger" aria-label="Delete order {{ $order->no_order }}" />
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="text-center p-2">
-                    {{ $orders->links() }}
-                </div>
+            <div class="text-center p-2">
+                {{ $orders->links() }}
             </div>
         </div>
     </div>
 
     {{-- ORDER FORM --}}
-    <br>
-    <div class="flex flex-col gap-6">
+    <div id="order-form" class="flex flex-col gap-6 mx-10 mb-10">
         <div class="rounded-xl border shadow-sm">
             <br>
             <flux:heading class="px-10" size="xl">
@@ -112,7 +114,6 @@
                             required 
                             :disabled="$orderId !== null || $isProduction"
                         />
-                                                
                         <flux:input wire:model.defer="price" label="Total Price" placeholder="Total" type="number" step="0.01" min="0" readonly />
                         <flux:textarea wire:model.defer="description" label="Description" placeholder="Description" required :disabled="$isProduction"/>
                         <flux:select wire:model.defer="orderOwnerId" label="User" required :disabled="$isProduction">
@@ -127,15 +128,14 @@
                             <option value="can_pick_up">Can Pick Up</option>
                             <option value="picked_up">Picked Up</option>
                         </flux:select>
-
                     </div>
-                @if(!$isProduction)
-                    <button type="button" wire:click="addProduct" class="...">Add Another Product</button> 
-                @endif
-                <div class="{{ $isProduction ? 'pointer-events-none opacity-60' : '' }}">        
-                    {{-- Product Selection --}}
-                    <div class="mt-6">
-                        <label class="block font-bold text-sm text-gray-700 mb-2" required><span class="text-red-500">*</span> Select Products</label>
+
+                    {{-- Product Select --}}
+                    <div class="{{ $isProduction ? 'pointer-events-none opacity-60' : '' }}">
+                        <label class="block font-bold text-sm text-gray-700 mt-6 mb-2">
+                            <span class="text-red-500">*</span> Select Products
+                        </label>
+
                         @foreach ($selectedProducts as $index => $product)
                             <div class="border p-4 rounded-xl mb-4">
                                 <div class="mb-2">
@@ -152,35 +152,33 @@
 
                                 @if(!empty($product['product_id']))
                                     <div class="flex items-center gap-2">
-                                        <input
-                                            type="number"
-                                            placeholder="Qty"
-                                            wire:model.defer="selectedProducts.{{ $index }}.quantity"
-                                            class="border rounded-md p-2 w-1/3 text-sm"
-                                            min="0"
-                                            aria-label="Quantity"
-                                        />
-                                        <input
-                                            type="number"
-                                            placeholder="Price"
-                                            wire:model.defer="selectedProducts.{{ $index }}.price"
-                                            class="border rounded-md p-2 w-1/3 text-sm"
-                                            step="0.01"
-                                            min="0"
-                                            aria-label="Price"
-                                        />
+                                        <input type="number" placeholder="Qty" wire:model.defer="selectedProducts.{{ $index }}.quantity"
+                                            class="border rounded-md p-2 w-1/3 text-sm" min="0" />
+                                        <input type="number" placeholder="Price" wire:model.defer="selectedProducts.{{ $index }}.price"
+                                            class="border rounded-md p-2 w-1/3 text-sm" step="0.01" min="0" />
                                     </div>
                                 @endif
 
-                                <button type="button" wire:click="removeProduct({{ $index }})" class="text-red-500 text-sm mt-2">Remove</button>
+                                <button type="button" wire:click="removeProduct({{ $index }})" class="text-red-500 text-sm mt-2">
+                                    Remove
+                                </button>
                             </div>
                         @endforeach
 
-                        <button type="button" wire:click="addProduct" class="mt-2 px-4 py-2 bg-sky-500 text-white rounded-md text-sm">
-                            Add Another Product
-                        </button> 
+                        @if(!$isProduction)
+                            <button type="button" wire:click="addProduct" class="mt-2 px-4 py-2 bg-sky-500 text-white rounded-md text-sm">
+                                Add Another Product
+                            </button> 
+                        @endif
                     </div>
-                </div>
+                    <button
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+    class="fixed bottom-6 right-6 z-50 bg-gray-700 hover:bg-gray-900 text-black w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300"
+    style="right: 2rem; bottom: 2rem;"
+    aria-label="Scroll to top"
+    title="Scroll to top">
+    <span class="text-2xl">↑</span>
+</button>
 
                     {{-- Submit Button --}}
                     <flux:button type="submit" variant="primary" icon="paper-airplane" class="mt-6 bg-green-500 text-white rounded-md text-sm">
@@ -209,7 +207,6 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Livewire.emit('delete', id);
                         Livewire.dispatch('delete', { id: id });
                     }
                 });

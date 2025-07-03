@@ -6,13 +6,31 @@
 
     {{-- Staff Table --}}
     <div class="flex flex-col gap-6">
-        <flux:heading class="px-10 flex items-center gap-2" size="xl">
-            All Staff
-            <flux:badge variant="primary">
-                {{ $staffs->total() }}
-            </flux:badge>
-        </flux:heading>
+        {{-- Title + Add Staff Button --}}
+        <div class="px-10 flex items-center justify-between">
+            <flux:heading class="flex items-center gap-2" size="xl">
+                All Staff
+                <flux:badge variant="primary">
+                    {{ $staffs->total() }}
+                </flux:badge>
+            </flux:heading>
 
+            {{-- Scroll to Form Button --}}
+            <button
+                onclick="document.getElementById('staff-form').scrollIntoView({ behavior: 'smooth' });"
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+            >
+                + Add Staff
+            </button>
+        </div>
+<button
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+    class="fixed bottom-6 right-6 z-50 bg-gray-700 hover:bg-gray-900 text-black w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300"
+    style="right: 2rem; bottom: 2rem;"
+    aria-label="Scroll to top"
+    title="Scroll to top">
+    <span class="text-2xl">↑</span>
+</button>
         <div class="rounded-xl border shadow-sm bg-white overflow-x-auto">
             <div class="px-10 py-8">
                 <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
@@ -53,7 +71,7 @@
     <br>
 
     {{-- Staff Form --}}
-    <div class="flex flex-col gap-6">
+    <div id="staff-form" class="flex flex-col gap-6">
         <div class="rounded-xl border">
             <br>
             <flux:heading class="px-10" size="xl">{{ $staffId ? 'Edit Staff' : 'Add Staff' }}</flux:heading>
@@ -120,8 +138,5 @@
             Livewire.on('userDeleteFailed', e => alert(e.message));
             Livewire.on('userSaved', e => alert(e.message));
         });
-        
-
-</script>
-
+    </script>
 </div>
