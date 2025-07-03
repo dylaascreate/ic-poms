@@ -148,7 +148,7 @@
                 <button 
                     x-data 
                     @click="$dispatch('open-track-order')" 
-                    class="inline-block px-5 py-1.5 bg-blue-600 text-white rounded-sm text-sm leading-normal hover:bg-blue-700 transition"
+                    class="inline-block px-5 py-1.5 bg-red-600 text-white rounded-sm text-sm leading-normal hover:bg-red-700 transition"
                 >
                     Track Order
                 </button>
@@ -207,7 +207,7 @@
         ">
             <input type="text" x-model="orderId" placeholder="Enter Order ID" class="border rounded px-3 py-2 w-full mb-4" required>
             <div class="flex gap-2">
-                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition" :disabled="loading">
+                <button type="submit" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition" :disabled="loading">
                     <span x-show="!loading">Track</span>
                     <span x-show="loading">Loading...</span>
                 </button>

@@ -52,7 +52,7 @@
                     </thead>
                     <tbody>
                         @foreach($products as $index => $pt)
-                            <tr class="{{ $index % 2 === 0 ? 'bg-rose-300' : 'bg-rose-200' }} hover:bg-blue-200 transition duration-200">
+                            <tr class="{{ $index % 2 === 0 ? 'bg-rose-200' : 'bg-rose-100' }} hover:bg-blue-200 transition duration-200">
                                 <td class="py-3 px-4 text-center font-medium">{{ $pt->id }}</td>
                                 <td class="py-3 px-4 text-center">
                                     @if ($pt->image)

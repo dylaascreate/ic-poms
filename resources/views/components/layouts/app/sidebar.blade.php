@@ -24,16 +24,6 @@
                 </flux:navlist.item>
             </flux:navlist.group>
 
-            <flux:navlist.item icon="inbox" badge="12" href="#">Orders</flux:navlist.item>
-
-            <flux:navlist.item icon="cube"
-                badge="{{ \App\Models\Product::count() }}"
-                :href="route('product')"
-                :current="request()->routeIs('product')"
-                wire:navigate>
-                Products
-            </flux:navlist.item>
-
             @if($user->role === 'admin')
             <flux:navlist.group expandable heading="Admin Tools" class="grid">
                 <flux:navlist.item icon="squares-plus"
@@ -82,7 +72,6 @@
             <flux:navlist.item icon="adjustments-horizontal" :href="route('settings.profile')" wire:navigate>
                 {{ __('Settings') }}
             </flux:navlist.item>
-            <flux:navlist.item icon="information-circle" href="#">Help</flux:navlist.item>
         </flux:navlist>
 
         <!-- Desktop User Menu -->
