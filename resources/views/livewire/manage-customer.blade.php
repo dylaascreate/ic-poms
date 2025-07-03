@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                         @foreach($customers as $cs)
-                            <tr>
+                            <tr class="{{ $loop->even ? 'bg-yellow-200' : 'bg-yellow-100' }} hover:bg-blue-200 transition duration-200 border-b">
                                 <td class="p-2 text-center">
                                     {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}
                                 </td>
