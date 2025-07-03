@@ -21,9 +21,9 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                <flux:navlist.item icon="inbox" badge="12" href="#">Orders</flux:navlist.item>
+                {{--<flux:navlist.item icon="inbox" badge="12" href="#">Orders</flux:navlist.item> --}}
                 {{-- Specific based on user's order --}}
-                <flux:navlist.item icon="cube" badge="{{ \App\Models\Product::count() }}" :href="route('product')" :current="request()->routeIs('product')" wire:navigate>Products</flux:navlist.item>
+                {{-- <flux:navlist.item icon="cube" badge="{{ \App\Models\Product::count() }}" :href="route('product')" :current="request()->routeIs('product')" wire:navigate>Products</flux:navlist.item>--}}
                 {{-- Same for all users --}}
                 {{-- Admin Tools --}}
                     <flux:navlist.group expandable heading="Admin Tools" class="grid">

@@ -2,6 +2,8 @@
 
 use App\Livewire\ProductIndex;
 use App\Livewire\OrderUser;
+use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -72,4 +74,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/dashboard', \App\Livewire\Auth\UserDashboard::class)->name('user.dashboard');
 });
 
+// Order tracking route
+Route::get('/track-order', function(Request $request) {
+    $order = Order::where('no_order', $request->order_id)->first();
+    if (!$order) {
+        return response()->json(['message' => 'Order not found'], 404);
+    }
+    return response()->json([
+        'no_order' => $order->no_order,
+        'status' => $order->status,
+        'description' => $order->description,
+        'price' => number_format($order->price, 2),
+    ]);
+});
 
