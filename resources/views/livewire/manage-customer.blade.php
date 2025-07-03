@@ -9,13 +9,35 @@
     @endif
 
     {{-- Customer Table --}}
-    <div class="flex flex-col gap-6">
-        <flux:heading class="px-10 flex items-center gap-2" size="xl">
+<div class="flex flex-col gap-6">
+    <div class="px-10 flex items-center justify-between">
+        <flux:heading class="flex items-center gap-2" size="xl">
             All Customers
             <flux:badge variant="primary">
                 {{ $customers->total() }}
             </flux:badge>
         </flux:heading>
+
+        <button
+            onclick="document.getElementById('customer-form').scrollIntoView({ behavior: 'smooth' });"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+        >
+            + Add Customer
+        </button>
+    </div>
+{{-- Scroll to Top Floating Button --}}
+{{-- Scroll to Top Floating Button --}}
+<button
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+    class="fixed bottom-6 right-6 z-50 bg-gray-700 hover:bg-gray-900 text-black w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300"
+    style="right: 2rem; bottom: 2rem;"
+    aria-label="Scroll to top"
+    title="Scroll to top">
+    <span class="text-2xl">↑</span>
+</button>
+
+
+
 
         <div class="rounded-xl border shadow-sm bg-white overflow-x-auto">
             <div class="px-10 py-8">
@@ -64,9 +86,11 @@
         </div>
     </div>
     <br>
+    
 
-    {{-- Customer Form --}}
-    <div class="flex flex-col gap-6">
+   {{-- Customer Form --}}
+<div id="customer-form" class="flex flex-col gap-6">
+
         <div class="rounded-xl border">
             <br>
             <flux:heading class="px-10" size="xl">{{ $customerId ? 'Edit Customer' : 'Add Customer' }}</flux:heading>
@@ -95,8 +119,10 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div>  
+        
     </div>
+    
 
     {{-- JavaScript --}}
     <script>
@@ -122,4 +148,10 @@
             });
         });
     </script>
+    {{-- Scroll to Top Button (Half-visible on Right) --}}
+<!-- Scroll to Top Button (Half-visible on Right) -->
+
+    
+    
 </div>
+
