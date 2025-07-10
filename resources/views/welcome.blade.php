@@ -47,21 +47,21 @@
         .product-carousel-container {
             position: relative;
             margin: 0 auto;
-            max-width: 1200px;
+            max-width: 1400px; /* Increased from 1200px */
             z-index: 1;
         }
         .product-carousel {
             overflow: hidden;
-            padding: 10px 0;
+            padding: 20px 0; /* Increased padding */
         }
         .carousel-track {
             display: flex;
             transition: transform 0.5s ease;
-            gap: 20px;
+            gap: 30px; /* Increased gap */
         }
         .product-card {
-            flex: 0 0 calc(50% - 10px);
-            min-width: 250px;
+            flex: 0 0 calc(50% - 15px); /* Adjusted for larger gap */
+            min-width: 300px; /* Increased from 250px */
         }
         .carousel-btn {
             position: absolute;
@@ -70,29 +70,30 @@
             background: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px; /* Increased from 40px */
+            height: 50px; /* Increased from 40px */
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             cursor: pointer;
             z-index: 10;
+            font-size: 1.2rem; /* Larger arrow icons */
         }
         .carousel-prev {
-            left: -20px;
+            left: -25px; /* Adjusted for larger button */
         }
         .carousel-next {
-            right: -20px;
+            right: -25px; /* Adjusted for larger button */
         }
         @media (min-width: 768px) {
             .product-card {
-                flex: 0 0 calc(33.333% - 14px);
+                flex: 0 0 calc(33.333% - 20px); /* Adjusted for larger gap */
             }
         }
         @media (min-width: 1024px) {
             .product-card {
-                flex: 0 0 calc(25% - 15px);
+                flex: 0 0 calc(25% - 22.5px); /* Adjusted for larger gap */
             }
         }
         /*Hero Carousel Styles*/
@@ -243,47 +244,47 @@
         <div x-show="error" class="mt-4 text-red-600" x-text="error"></div>
     </div>
 </div>
-        <!-- Hero Section -->
-        <div class="relative bg-gray-100 h-80 md:h-96 flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-            <!-- Carousel Container -->
-            <div class="hero-carousel absolute w-full h-full -z-20">
-                <!-- Image 1 (Active by default) -->
-                <div class="hero-slide active">
-                    <img src="images/header.jpg" alt="I-Creative Banner 1" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black/30"></div>
-                </div>
 
-                <!-- Image 2 -->
-                <div class="hero-slide">
-                    <img src="images/banner.jpg" alt="I-Creative Banner 2" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black/30"></div>
-                </div>
-                
-                <!-- Image 3 -->
-                <div class="hero-slide">
-                    <img src="images/foamboard.jpg" alt="I-Creative Banner 3" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black/30"></div>
-                </div>
+    <!-- Hero Section -->
+    <div class="relative bg-gray-100 h-80 md:h-96 flex flex-col justify-center items-center text-center px-4 overflow-hidden">
+        <!-- Carousel Container -->
+        <div class="hero-carousel absolute w-full h-full -z-20">
+            <!-- Image 1 (Active by default) -->
+            <div class="hero-slide active">
+                <img src="images/header.jpg" alt="I-Creative Banner 1" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
+            </div>
+
+            <!-- Image 2 -->
+            <div class="hero-slide">
+                <img src="images/banner.jpg" alt="I-Creative Banner 2" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
             </div>
             
-            <!-- Navigation Dots -->
-            <div class="hero-dots absolute bottom-4 flex space-x-2">
-                <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="0"></button>
-                <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="1"></button>
-                <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="2"></button>
+            <!-- Image 3 -->
+            <div class="hero-slide">
+                <img src="images/foamboard.jpg" alt="I-Creative Banner 3" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
             </div>
         </div>
-
-        <!-- No SSM Section -->
-        <div class="container mx-auto px-4 py-12">
-            <h3 class="text-xl font-bold text-center">No SSM</h3>
+        
+        <!-- Navigation Dots -->
+        <div class="hero-dots absolute bottom-4 flex space-x-2">
+            <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="0"></button>
+            <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="1"></button>
+            <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-slide="2"></button>
         </div>
+    </div>
 
-        <!-- Promotion Section -->
-        <div class="container mx-auto px-4 py-12">
-            <h2 class="text-3xl font-bold mb-8 text-center">Promotions</h2>
+    <!-- No SSM Section -->
+    <div class="container mx-auto px-4 py-12">
+        <h3 class="text-xl font-bold text-center">No SSM</h3>
+    </div>
 
-        <!-- Promotion Carousel -->
+    <!-- Promotion Section -->
+    <div class="container mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold mb-8 text-center">Promotions</h2>
+
         <div class="product-carousel-container">
             <button class="carousel-btn carousel-prev" aria-label="Previous">
                 <i class="fas fa-chevron-left"></i>
@@ -291,58 +292,31 @@
             <button class="carousel-btn carousel-next" aria-label="Next">
                 <i class="fas fa-chevron-right"></i>
             </button>
-            
+
             <div class="product-carousel">
                 <div class="carousel-track">
+                    @foreach ($promotions as $promotion)
                     <div class="product-card">
-                        <img src="images/button-badge.jpg" alt="Button Badge" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BUTTON BADGE</h3>
-                        <p class="text-sm">Pilihan: Pin / Magnet</p><br>
+                        <img src="{{ asset('storage/' . $promotion->image) }}" alt="{{ $promotion->title }}" class="w-full h-70 object-cover mb-4 rounded">
+                        <h3 class="font-bold text-lg">{{ $promotion->title }}</h3>
+                        <p class="text-base">{{ $promotion->description }}</p>
+                        @auth
+                            @if(auth()->user()->role === 'marketing')
+                                <a href="{{ route('promotions.edit', $promotion->id) }}" class="text-blue-500 hover:underline text-sm">Edit</a>
+                            @endif
+                        @endauth
                     </div>
-                    <div class="product-card">
-                        <img src="images/brochure.jpg" alt="Brochure" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BROCHURES</h3>
-                        <p class="text-sm">Pelbagai saiz & lipatan</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/bunting.jpg" alt="Bunting" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">ROLL-UP BUNTING</h3>
-                        <p class="text-sm">Material: Synthetic Paper (200gsm / 320gsm)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/velvet-box.jpg" alt="Velvet Box" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">VELVET BOX</h3>
-                        <p class="text-sm">Material: Wood & Velvet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/banner.jpg" alt="Banner" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BANNER</h3>
-                        <p class="text-sm">Material: Tarpaulin (380gsm) <br>Saiz: Pelbagai</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/flyers.jpg" alt="Flyers" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FLYERS</h3>
-                        <p class="text-sm">Material: Art Paper (Kertas Licin)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/foamboard.jpg" alt="Foamboard" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FOAMBOARD</h3>
-                        <p class="text-sm">Material ringan, mudah dibawa & dipasang</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/mock-cheque.jpg" alt="Mock Cheque" class="w-full h-70 object-cover mb-5 rounded">
-                        <h3 class="font-bold">MOCK CHEQUE</h3>
-                        <p class="text-sm">Material: Foam Board</p>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
+    </div>
+
 
     <!-- Our Products Section -->
     <div class="container mx-auto px-4 py-12">
         <h2 class="text-3xl font-bold mb-8 text-center">Our Products</h2>
 
-        <!-- Products Carousel -->
         <div class="product-carousel-container">
             <button class="carousel-btn carousel-prev" aria-label="Previous">
                 <i class="fas fa-chevron-left"></i>
@@ -350,62 +324,28 @@
             <button class="carousel-btn carousel-next" aria-label="Next">
                 <i class="fas fa-chevron-right"></i>
             </button>
-            
+
             <div class="product-carousel">
                 <div class="carousel-track">
-                    <div class="product-card">
-                        <img src="images/button-badge.jpg" alt="Button Badge" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BUTTON BADGE</h3>
-                        <p class="text-sm">Pilihan: Pin / Magnet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/brochure.jpg" alt="Brochure" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BROCHURES</h3>
-                        <p class="text-sm">Pelbagai saiz & lipatan</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/bunting.jpg" alt="Bunting" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">ROLL-UP BUNTING</h3>
-                        <p class="text-sm">Material: Synthetic Paper (200gsm / 320gsm)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/velvet-box.jpg" alt="Velvet Box" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">VELVET BOX</h3>
-                        <p class="text-sm">Material: Wood & Velvet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/banner.jpg" alt="Banner" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BANNER</h3>
-                        <p class="text-sm">Material: Tarpaulin (380gsm) <br>Saiz: Pelbagai</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/flyers.jpg" alt="Flyers" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FLYERS</h3>
-                        <p class="text-sm">Material: Art Paper (Kertas Licin)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/foamboard.jpg" alt="Foamboard" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FOAMBOARD</h3>
-                        <p class="text-sm">Material ringan, mudah dibawa & dipasang</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/mock-cheque.jpg" alt="Mock Cheque" class="w-full h-70 object-cover mb-5 rounded">
-                        <h3 class="font-bold">MOCK CHEQUE</h3>
-                        <p class="text-sm">Material: Foam Board</p>
-                    </div>
+                    @foreach ($products as $product)
+                        <div class="product-card">
+                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-70 object-cover mb-4 rounded">
+                            <h3 class="font-bold text-lg">{{ $product->name }}</h3>
+                            <p class="text-base">{{ $product->description }}</p>
+
+                            @auth
+                                @if(auth()->user()->role === 'marketing')
+                                    <a href="{{ route('products.edit', $product->id) }}" class="text-blue-500 hover:underline text-sm">Edit</a>
+                                @endif
+                            @endauth
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        </div></div><br>
-    
-
-        {{-- <div class="w-full text-center mt-8">
-            <a href="{{ route('login') }}" class="inline-block px-6 py-2 rounded hover:bg-red-100 transition-colors">
-                Discover More
-            </a>
         </div>
-    </div> --}}
-
-
+    </div>
+        </div></div><br><br>
+    
     <!-- About Us Section -->
     <div class="container mx-auto px-4">
         <div class="floating-card max-w-6xl mx-auto p-8 bg-white bg-opacity-70">
@@ -422,48 +362,27 @@
     </div><br><br>
 
 
-    <!-- Team Section -->
-    <div class="mt-12">
-        <h2 class="text-2xl font-semibold mb-8 text-center">Our Team</h2><br>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            <!-- Manager -->
-            <div class="flex flex-col items-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                    <img src="/path-to-manager-image.jpg" alt="Manager" class="w-full h-full object-cover">
-                </div>
-                <h4 class="mt-4 text-xl font-medium">......</h4>
-                <p class="text-gray-600">Manager</p>
-            </div>
-            
-            <!-- Marketing -->
-            <div class="flex flex-col items-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                    <img src="/path-to-marketing-image.jpg" alt="Marketing" class="w-full h-full object-cover">
-                </div>
-                <h4 class="mt-4 text-xl font-medium">.....</h4>
-                <p class="text-gray-600">Marketing</p>
-            </div>
-            
-            <!-- Production -->
-            <div class="flex flex-col items-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                    <img src="/path-to-production-image.jpg" alt="Production" class="w-full h-full object-cover">
-                </div>
-                <h4 class="mt-4 text-xl font-medium">.....</h4>
-                <p class="text-gray-600">Production</p>
-            </div>
-            
-            <!-- Promotion -->
-            <div class="flex flex-col items-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                    <img src="/path-to-promotion-image.jpg" alt="Promotion" class="w-full h-full object-cover">
-                </div>
-                <h4 class="mt-4 text-xl font-medium">......</h4>
-                <p class="text-gray-600">Promotion</p>
-            </div>
+<!-- Our Team Section -->
+<div class="container mx-auto px-4 py-12">
+    <h2 class="text-3xl font-bold mb-8 text-center">Our Team</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    @foreach ($teams as $member)
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}" class="w-32 h-32 mx-auto rounded-full mb-4 object-cover">
+            <h3 class="text-xl font-semibold">{{ $member->name }}</h3>
+            <p class="text-sm text-gray-600">{{ $member->position }}</p>
+
+            @auth
+                @if(auth()->user()->role === 'marketing')
+                    <a href="{{ route('teams.edit', $member->id) }}" class="text-blue-500 hover:underline text-sm">Edit</a>
+                @endif
+            @endauth
         </div>
+    @endforeach
     </div>
 </div>
+
 </div></div><br>
 
     <!-- Footer -->
@@ -570,14 +489,14 @@
                 const prevBtn = container.querySelector('.carousel-prev');
                 const nextBtn = container.querySelector('.carousel-next');
                 const products = container.querySelectorAll('.product-card');
-                let productWidth = products[0] ? products[0].offsetWidth + 20 : 0; // including gap
+                let productWidth = products[0] ? products[0].offsetWidth + 30 : 0; // including larger gap
                 let currentPosition = 0;
                 let maxPosition = 0;
                 
                 function updateMaxPosition() {
                     if (!products.length) return;
                     
-                    productWidth = products[0].offsetWidth + 20;
+                    productWidth = products[0].offsetWidth + 30; // including larger gap
                     const screenWidth = window.innerWidth;
                     let visibleProducts = 4; // default for large screens
                     
