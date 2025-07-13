@@ -76,6 +76,12 @@ public function clearSearch()
         'orders' => $query->latest()->paginate(10),
         'orderOwners' => User::all(),
         'products' => $this->productList,
+        // Add counts for dashboard
+        'totalOrders' => Order::count(),
+        'waitingOrders' => Order::where('status', 'waiting')->count(),
+        'printingOrders' => Order::where('status', 'printing')->count(),
+        'readyOrders' => Order::where('status', 'can_pick_up')->count(),
+        'pickedUpOrders' => Order::where('status', 'picked_up')->count(),
     ]);
 }
 
