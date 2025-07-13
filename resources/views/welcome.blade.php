@@ -285,129 +285,14 @@
         <!-- Promotion Section -->
         <div class="container mx-auto px-4 py-12">
             <h2 class="text-3xl font-bold mb-8 text-center">Promotions</h2>
-
-        <!-- Promotion Carousel -->
-        <div class="product-carousel-container">
-            <button class="carousel-btn carousel-prev" aria-label="Previous">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-btn carousel-next" aria-label="Next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <div class="product-carousel">
-                <div class="carousel-track">
-                    <div class="product-card">
-                        <img src="images/button-badge.jpg" alt="Button Badge" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BUTTON BADGE</h3>
-                        <p class="text-sm">Pilihan: Pin / Magnet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/brochure.jpg" alt="Brochure" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BROCHURES</h3>
-                        <p class="text-sm">Pelbagai saiz & lipatan</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/bunting.jpg" alt="Bunting" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">ROLL-UP BUNTING</h3>
-                        <p class="text-sm">Material: Synthetic Paper (200gsm / 320gsm)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/velvet-box.jpg" alt="Velvet Box" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">VELVET BOX</h3>
-                        <p class="text-sm">Material: Wood & Velvet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/banner.jpg" alt="Banner" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BANNER</h3>
-                        <p class="text-sm">Material: Tarpaulin (380gsm) <br>Saiz: Pelbagai</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/flyers.jpg" alt="Flyers" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FLYERS</h3>
-                        <p class="text-sm">Material: Art Paper (Kertas Licin)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/foamboard.jpg" alt="Foamboard" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FOAMBOARD</h3>
-                        <p class="text-sm">Material ringan, mudah dibawa & dipasang</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/mock-cheque.jpg" alt="Mock Cheque" class="w-full h-70 object-cover mb-5 rounded">
-                        <h3 class="font-bold">MOCK CHEQUE</h3>
-                        <p class="text-sm">Material: Foam Board</p>
-                    </div>
-                </div>
-            </div>
+            <livewire:home-promotions />
         </div>
 
     <!-- Our Products Section -->
-    <div class="container mx-auto px-4 py-12">
-        <h2 class="text-3xl font-bold mb-8 text-center">Our Products</h2>
-
-        <!-- Products Carousel -->
-        <div class="product-carousel-container">
-            <button class="carousel-btn carousel-prev" aria-label="Previous">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-btn carousel-next" aria-label="Next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <div class="product-carousel">
-                <div class="carousel-track">
-                    <div class="product-card">
-                        <img src="images/button-badge.jpg" alt="Button Badge" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BUTTON BADGE</h3>
-                        <p class="text-sm">Pilihan: Pin / Magnet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/brochure.jpg" alt="Brochure" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BROCHURES</h3>
-                        <p class="text-sm">Pelbagai saiz & lipatan</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/bunting.jpg" alt="Bunting" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">ROLL-UP BUNTING</h3>
-                        <p class="text-sm">Material: Synthetic Paper (200gsm / 320gsm)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/velvet-box.jpg" alt="Velvet Box" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">VELVET BOX</h3>
-                        <p class="text-sm">Material: Wood & Velvet</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/banner.jpg" alt="Banner" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">BANNER</h3>
-                        <p class="text-sm">Material: Tarpaulin (380gsm) <br>Saiz: Pelbagai</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/flyers.jpg" alt="Flyers" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FLYERS</h3>
-                        <p class="text-sm">Material: Art Paper (Kertas Licin)</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/foamboard.jpg" alt="Foamboard" class="w-full h-70 object-cover mb-4 rounded">
-                        <h3 class="font-bold">FOAMBOARD</h3>
-                        <p class="text-sm">Material ringan, mudah dibawa & dipasang</p><br>
-                    </div>
-                    <div class="product-card">
-                        <img src="images/mock-cheque.jpg" alt="Mock Cheque" class="w-full h-70 object-cover mb-5 rounded">
-                        <h3 class="font-bold">MOCK CHEQUE</h3>
-                        <p class="text-sm">Material: Foam Board</p>
-                    </div>
-                </div>
-            </div>
-        </div></div><br>
-    
-
-        {{-- <div class="w-full text-center mt-8">
-            <a href="{{ route('login') }}" class="inline-block px-6 py-2 rounded hover:bg-red-100 transition-colors">
-                Discover More
-            </a>
+        <div class="container mx-auto px-4 py-12">
+            <h2 class="text-3xl font-bold mb-8 text-center">Our Products</h2>
+            <livewire:home-products />
         </div>
-    </div> --}}
-
 
     <!-- About Us Section -->
     <div class="container mx-auto px-4">
