@@ -16,7 +16,6 @@ use App\Livewire\ManageCustomer;
 use App\Livewire\Auth\Login;
 use App\Livewire\ManageStaff;
 
-
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
 
