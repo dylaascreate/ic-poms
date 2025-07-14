@@ -26,13 +26,21 @@
 
             @if($user->role === 'admin')
            <flux:navlist.group expandable heading="Admin Tools" class="grid">
-                {{-- <flux:navlist.item icon="squares-plus"
+                <flux:navlist.item icon="squares-plus"
                     badge="{{ \App\Models\Product::count() }}"
                     :href="route('manage-product')"
                     :current="request()->routeIs('manage-product')"
                     wire:navigate>
                     Manage Products
-                </flux:navlist.item>  --}}
+                </flux:navlist.item>  
+
+                <flux:navlist.item icon="star"
+                    badge="{{ \App\Models\Promotion::count() }}"
+                    :href="route('manage-promotion')"
+                    :current="request()->routeIs('manage-promotion')"
+                    wire:navigate>
+                    Manage Promotion
+                </flux:navlist.item> 
 
                 <flux:navlist.item icon="list-bullet"
                     badge="{{ \App\Models\Order::count() }}"

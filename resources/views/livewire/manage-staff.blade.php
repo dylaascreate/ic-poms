@@ -36,7 +36,7 @@
                 <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
                     <thead>
                         <tr class="bg-purple-500 text-white uppercase text-sm">
-                            <th class="p-2 text-center">ID</th>
+                            {{-- <th class="p-2 text-center">ID</th> --}}
                             <th class="p-2 text-left">Name</th>
                             <th class="p-2 text-left">Email</th>
                             <th class="p-2 text-center">Role</th>
@@ -47,7 +47,7 @@
                     <tbody>
                         @foreach($staffs as $staff)
                             <tr class="{{ $loop->even ? 'bg-purple-200' : 'bg-purple-100' }} hover:bg-blue-200 transition duration-200 border-b">
-                                <td class="p-2 text-center">{{ $staff->id }}</td>
+                                {{-- <td class="p-2 text-center">{{ $staff->id }}</td> --}}
                                 <td class="p-2">{{ $staff->name }}</td>
                                 <td class="p-2">{{ $staff->email }}</td>
                                 <td class="p-2 text-center">{{ ucfirst($staff->role) }}</td>

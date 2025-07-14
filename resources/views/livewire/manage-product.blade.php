@@ -41,7 +41,7 @@
                 <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
                     <thead class="bg-rose-500 text-white text-sm uppercase">
                         <tr>
-                            <th class="py-3 px-4 text-center">ID</th>
+                            {{-- <th class="py-3 px-4 text-center">ID</th> --}}
                             <th class="py-3 px-4">Image</th>
                             <th class="py-3 px-4 text-center">Category</th>
                             <th class="py-3 px-4">Name</th>
@@ -53,7 +53,7 @@
                     <tbody>
                         @foreach($products as $index => $pt)
                             <tr class="{{ $index % 2 === 0 ? 'bg-rose-200' : 'bg-rose-100' }} hover:bg-blue-200 transition duration-200">
-                                <td class="py-3 px-4 text-center font-medium">{{ $pt->id }}</td>
+                                {{-- <td class="py-3 px-4 text-center font-medium">{{ $pt->id }}</td> --}}
                                 <td class="py-3 px-4 text-center">
                                     @if ($pt->image)
                                         <img src="{{ asset('storage/' . $pt->image) }}" alt="Product Image" class="h-16 w-16 object-cover rounded-md border mx-auto">

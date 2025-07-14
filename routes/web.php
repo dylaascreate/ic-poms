@@ -15,6 +15,7 @@ use App\Livewire\ManageProduct;
 use App\Livewire\ManageCustomer;
 use App\Livewire\Auth\Login;
 use App\Livewire\ManageStaff;
+use App\Livewire\ManagePromotion;
 
 // Main route
 Route::get('/', fn () => view('welcome'))->name('home');
@@ -60,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ORDERS
     Route::get('manage-order', \App\Livewire\ManageOrder::class)->name('manage-order');
+    Route::get('/admin/promotions', ManagePromotion::class)->name('manage-promotion');
 });
 
 // ORDER (public route)
