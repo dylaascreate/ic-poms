@@ -33,11 +33,12 @@ class Register extends Component
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['role'] = 'admin';
 
         event(new Registered(($user = User::create($validated))));
-
+        
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->redirect(route('admin.dashboard', absolute: false), navigate: true);
     }
 }

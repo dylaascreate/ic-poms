@@ -81,6 +81,7 @@ class User extends Authenticatable
      * Position Constants
      */
     public const USER_DEFAULT_POSITION = 'customer';
+    public const ADMIN_DEFAULT_POSITION = 'production staff';
 
     public const ADMIN_POSITIONS = [
         'superadmin',
@@ -92,6 +93,7 @@ class User extends Authenticatable
 
     public const ALL_POSITIONS = [
         self::USER_DEFAULT_POSITION,
+        self::ADMIN_DEFAULT_POSITION,
         ...self::ADMIN_POSITIONS,
     ];
 }
