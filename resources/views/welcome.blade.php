@@ -61,6 +61,81 @@
         </nav>
     </header>
 
+    <!-- Track Order Modal -->
+<div 
+    x-data="{
+        open: false,
+        orderId: '',
+        loading: false,
+        result: null,
+        error: '',
+        getStatusColor(status) {
+            switch (status) {
+                case 'waiting': return 'bg-gray-400 text-white';
+                case 'printing': return 'bg-green-500 text-white';
+                case 'can_pick_up': return 'bg-orange-500 text-white';
+                case 'picked_up': return 'bg-indigo-500 text-white';
+                default: return 'bg-gray-200 text-gray-800';
+            }
+        }
+    }"
+    x-on:open-track-order.window="open = true"
+    x-show="open"
+    style="background: rgba(0,0,0,0.4)"
+    class="fixed inset-0 flex items-center justify-center z-50"
+    x-cloak
+>
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+        <!-- Icon Row -->
+        <div class="absolute top-2 right-2 flex items-center space-x-3">
+            <!-- Refresh/Clear Icon -->
+            <i 
+                class="fas fa-rotate-right cursor-pointer text-gray-400 hover:text-blue-600 text-xl"
+                title="Clear"
+                @click="orderId = ''; result = null; error = ''"
+            ></i>
+            <!-- Close Icon -->
+            <button @click="open = false" class="text-gray-400 hover:text-gray-700 text-2xl" title="Close">&times;</button>
+        </div>
+        <h2 class="text-xl font-bold mb-4">Track Your Order</h2>
+        <form @submit.prevent="
+            loading = true;
+            error = '';
+            result = null;
+            fetch('/track-order?order_id=' + orderId)
+                .then(res => res.ok ? res.json() : Promise.reject(res))
+                .then(data => { result = data; loading = false; })
+                .catch(async err => {
+                    loading = false;
+                    error = (await err.text()) || 'Order not found';
+                });
+        ">
+            <input type="text" x-model="orderId" placeholder="Enter Order ID" class="border rounded px-3 py-2 w-full mb-4" required>
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition" :disabled="loading">
+                    <span x-show="!loading">Track</span>
+                    <span x-show="loading">Loading...</span>
+                </button>
+            </div>
+        </form>
+        <template x-if="result">
+            <div class="mt-4 p-4 bg-gray-50 rounded border">
+                <div class="font-semibold mb-2">Order: <span x-text="result.no_order"></span></div>
+                <div>
+                    Status:
+                    <span
+                        x-bind:class="result ? getStatusColor(result.status) + ' px-2 py-1 rounded font-bold ml-1' : ''"
+                        x-text="result ? result.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : ''"
+                    ></span>
+                </div>
+                <div>Description: <span x-text="result.description"></span></div>
+                <div>Total Price: RM <span x-text="result.price"></span></div>
+            </div>
+        </template>
+        <div x-show="error" class="mt-4 text-red-600" x-text="error"></div>
+    </div>
+</div>
+    
     <!-- Hero Section -->
     <section class="relative h-80 md:h-96 rounded overflow-hidden">
         <div class="absolute inset-0">
