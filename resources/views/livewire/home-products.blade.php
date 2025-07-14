@@ -8,7 +8,7 @@
         @foreach($products as $product)
             <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition transform hover:-translate-y-2 hover:scale-105 border-4 border-transparent hover:border-indigo-400 relative">
                
-                <img src="{{ asset('images/' . $product->image) }}"
+                <img src="{{ asset($product->image) }}"
                      alt="{{ $product->name }}"
                      class="w-full h-48 object-cover mb-4 rounded-lg border-2 border-indigo-200 shadow-md">
                 <h3 class="text-xl font-extrabold text-indigo-700 mb-2 tracking-wide">{{ strtoupper($product->name) }}</h3>

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             OrderProductSeeder::class,
             OrderStatusHistorySeeder::class,
             SuperAdminSeeder::class, // Create a super admin user
+            PromotionSeeder::class, // Seed promotions
         ]);
 
 

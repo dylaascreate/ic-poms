@@ -13,7 +13,7 @@
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <!-- Logo -->
-        <a href="{{ route($dashboardRoute) }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+        <a href="{{ route('home') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
             <x-app-logo />
         </a>
 

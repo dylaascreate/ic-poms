@@ -39,10 +39,10 @@
                     <p class="text-sm text-red-500 italic mb-7 font-semibold">Valid until: {{ \Carbon\Carbon::parse($promo->valid_until)->format('d M Y') }}</p>
                 @endif
 
-                {{-- Call to Action --}}
+                {{-- Call to Action
                 <a href="#order-now" class="bg-gradient-to-r from-red-600 to-yellow-400 text-white px-7 py-3 rounded-full font-bold text-lg shadow-lg hover:from-red-700 hover:to-yellow-500 transition border-2 border-red-700">
                     {{ $promo->button_text ?? 'Get Now' }}
-                </a>
+                </a> --}}
             </div>
         @endforeach
     </div>

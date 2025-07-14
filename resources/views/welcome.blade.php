@@ -48,6 +48,7 @@
 <body class="font-sans text-white bg-gradient-to-br from-red-600 via-yellow-300 via-blue-400 to-black relative overflow-x-hidden">
 
 <div class="max-w-screen-xl mx-auto px-4 relative z-10">
+    <br>
     <!-- Header -->
     <header class="flex justify-between items-center py-4">
         <h1 class="text-2xl font-bold">I-Creative Lab Sdn.Bhd</h1>
@@ -61,7 +62,8 @@
                 <button 
                     x-data 
                     @click="$dispatch('open-track-order')" 
-                    class="inline-block px-5 py-1.5 bg-red-600 text-white rounded-sm text-sm leading-normal hover:bg-red-700 transition"
+                    class="inline-block bg-red-600 text-white text-sm px-4 py-2 border border-red-600 rounded hover:bg-red-700 transition"
+
                 >
                     Track Order
                 </button>
@@ -208,15 +210,8 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-custom-maroon text-white py-6 text-center">
-        <div class="mb-4 space-x-4">
-            <a href="https://facebook.com/szuplus" target="_blank" class="hover:text-gray-300"><i class="fab fa-facebook mr-1"></i>I-Creative Lab Sdn Bhd</a>
-            <a href="https://instagram.com/icreativetm" target="_blank" class="hover:text-gray-300"><i class="fab fa-instagram mr-1"></i>@icreativetm</a>
-            <a href="https://wa.me/60126826859" target="_blank" class="hover:text-gray-300"><i class="fab fa-whatsapp mr-1"></i>012-6826859</a>
-        </div>
-        <p class="text-sm">© I-Creative 2025. All rights reserved.</p>
-    </footer>
+    
+
 </div>
 
 <!-- Floating Blobs for Decoration -->
@@ -228,4 +223,26 @@
 </div>
 
 </body>
+<footer class="bg-custom-maroon text-white py-6">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            {{-- Social & Contact --}}
+            <div class="space-y-2 md:space-y-0 md:space-x-6 flex flex-col md:flex-row items-center">
+                <a href="https://facebook.com/szuplus" target="_blank" class="hover:text-gray-300 flex items-center gap-1">
+                    <i class="fab fa-facebook"></i>
+                    <span>I-Creative Lab Sdn Bhd</span>
+                </a>
+                <a href="https://instagram.com/icreativetm" target="_blank" class="hover:text-gray-300 flex items-center gap-1">
+                    <i class="fab fa-instagram"></i>
+                    <span>@icreativetm</span>
+                </a>
+                <a href="https://wa.me/60126826859" target="_blank" class="hover:text-gray-300 flex items-center gap-1">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>012-6826859</span>
+                </a>
+            </div>
+
+            {{-- Copyright --}}
+            <p class="text-sm">&copy; I-Creative {{ now()->year }}. All rights reserved.</p>
+        </div>
+    </footer>
 </html>
