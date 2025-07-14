@@ -16,13 +16,14 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
         User::factory()->count(5)->create();    // regular users
-        User::factory()->admin()->create();            // one admin user 
+        // User::factory()->admin()->create();            // one admin user 
 
         $this->call([
             OrderSeeder::class,
             ProductSeeder::class,
             OrderProductSeeder::class,
             OrderStatusHistorySeeder::class,
+            SuperAdminSeeder::class, // Create a super admin user
         ]);
 
 

@@ -52,12 +52,14 @@
 
                 @if(in_array($user->position, ['SuperAdmin', 'Manager']))
                     <flux:navlist.item icon="user-plus"
+                        badge="{{ \App\Models\User::where('role', 'user')->count() }}"
                         :href="route('manage-customer')"
                         :current="request()->routeIs('manage-customer')"
                         wire:navigate>
                         Manage Customers
                     </flux:navlist.item>
-                    <flux:navlist.item icon="star"
+                    <flux:navlist.item icon="building-office-2"
+                        badge="{{ \App\Models\User::where('role', 'admin')->count() }}"
                         :href="route('manage-staff')"
                         :current="request()->routeIs('manage-staff')"
                         wire:navigate>

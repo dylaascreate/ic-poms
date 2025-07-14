@@ -27,7 +27,7 @@ class ManageProduct extends Component
     {
         // $data['products'] = Product::get(); // get all products
         // return view('livewire.product-index');
-        $data['products'] = Product::paginate(10); // get all products with pagination
+        $data['products'] = Product::paginate(5); // get all products with pagination
         return view('livewire.manage-product', $data);
         
     }

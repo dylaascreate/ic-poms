@@ -30,6 +30,7 @@ class ProductSeeder extends Seeder
         foreach ($categories as $category) {
             Product::factory()->count(2)->create([
                 'category' => $category,
+                'image' => 'default-img.png',
             ]);
         }
     }
