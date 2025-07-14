@@ -30,7 +30,7 @@
                 <table class="w-full text-sm text-left table-auto border-collapse rounded-lg overflow-hidden">
                     <thead class="bg-yellow-500 text-white text-sm uppercase">
                         <tr>
-                            <th class="py-3 px-4 text-center">ID</th>
+                            {{-- <th class="py-3 px-4 text-center">ID</th> --}}
                             <th class="py-3 px-4">Image</th>
                             <th class="py-3 px-4">Title</th>
                             <th class="py-3 px-4">Description</th>
@@ -40,7 +40,7 @@
                     <tbody>
                         @foreach($promotions as $index => $promo)
                             <tr class="{{ $index % 2 === 0 ? 'bg-yellow-200' : 'bg-yellow-100' }} hover:bg-blue-200 transition duration-200">
-                                <td class="py-3 px-4 text-center font-medium">{{ $promo->id }}</td>
+                                {{-- <td class="py-3 px-4 text-center font-medium">{{ $promo->id }}</td> --}}
                                 <td class="py-3 px-4 text-center">
                                     @if ($promo->image)
                                         <img src="{{ asset('storage/' . $promo->image) }}" alt="Promotion Image" class="h-16 w-16 object-cover rounded-md border mx-auto">

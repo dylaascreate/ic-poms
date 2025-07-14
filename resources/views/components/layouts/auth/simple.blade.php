@@ -18,9 +18,9 @@
         <div class="flex min-h-screen items-center justify-center bg-overlay px-4">
             <div class="w-full max-w-md rounded-2xl bg-white/90 p-8 shadow-lg backdrop-blur-md dark:bg-neutral-900/80">
                 <div class="mb-6 flex flex-col items-center gap-2 font-medium">
-                    <a href="{{ route('home') }}">
+                    {{-- <a href="{{ route('home') }}">
                         <img src="{{ asset('images/icreative-logo.png') }}" alt="I-Creative Logo" class="h-12 w-auto" />
-                    </a>
+                    </a> --}}
                 </div>
 
                 {{ $slot }}

@@ -44,7 +44,7 @@
                 <table class="w-full table-auto border-collapse rounded-xl overflow-hidden text-sm">
                     <thead>
                         <tr class="bg-yellow-500 text-white uppercase text-sm">
-                            <th class="p-2 text-center">ID</th>
+                            {{-- <th class="p-2 text-center">ID</th> --}}
                             <th class="p-2 text-left">Name</th>
                             <th class="p-2 text-left">Email</th>
                             <th class="p-2 text-center">Role</th>
@@ -54,9 +54,9 @@
                     <tbody>
                         @foreach($customers as $cs)
                             <tr class="{{ $loop->even ? 'bg-yellow-200' : 'bg-yellow-100' }} hover:bg-blue-200 transition duration-200 border-b">
-                                <td class="p-2 text-center">
+                                {{-- <td class="p-2 text-center">
                                     {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}
-                                </td>
+                                </td> --}}
                                 <td class="p-2">{{ $cs->name }}</td>
                                 <td class="p-2">{{ $cs->email }}</td>
                                 <td class="p-2 text-center">{{ ucfirst($cs->role) }}</td>

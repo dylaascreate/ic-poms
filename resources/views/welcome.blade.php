@@ -55,7 +55,7 @@
             @auth
                 <a href="{{ url('/dashboard') }}" class="text-sm px-4 py-2 border rounded hover:border-white">Dashboard</a>
             @else
-                <a href="{{ route('login') }}" class="text-sm px-4 py-2 border rounded hover:border-white">Login / Sign Up</a>
+                <a href="{{ route('login') }}" class="text-sm px-4 py-2 border rounded hover:border-white">Staff Login</a>
             @endauth
             <button x-data @click="$dispatch('open-track-order')" class="text-sm px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Track Order</button>
         </nav>
