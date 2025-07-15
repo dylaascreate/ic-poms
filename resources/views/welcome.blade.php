@@ -201,11 +201,11 @@
             </div>
             <div class="flex flex-col items-center">
                 <img src="https://ui-avatars.com/api/?name=Chen&background=730505&color=fff" class="w-32 h-32 rounded-full mb-2" />
-                <h4 class="font-medium">Mr. Chen</h4><p>Production</p>
+                <h4 class="font-medium">Mr. Chen</h4><p>Designer</p>
             </div>
             <div class="flex flex-col items-center">
                 <img src="https://ui-avatars.com/api/?name=Dina&background=730505&color=fff" class="w-32 h-32 rounded-full mb-2" />
-                <h4 class="font-medium">Ms. Dina</h4><p>Promotion</p>
+                <h4 class="font-medium">Ms. Dina</h4><p>Production</p>
             </div>
         </div>
     </section>

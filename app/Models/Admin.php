@@ -34,8 +34,8 @@ class Admin extends Authenticatable
     // Constants for admin positions
     public const ADMIN_POSITIONS = [
         'SuperAdmin',
-        'Designer',
         'Manager',
+        'Designer',
         'Marketing',
         'Production Staff',
     ];
